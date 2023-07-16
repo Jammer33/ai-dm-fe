@@ -1,0 +1,33 @@
+/* src/StatsArea.css */
+.stats-area {
+    font-family: 'Arial', sans-serif;
+    background-color: #222;
+    padding: 1rem;
+    color: white;
+    text-align: center;
+    margin-bottom: 1rem;
+    width: 40%;
+  }
+  
+  .dice-buttons {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 1rem;
+  }
+  
+  .dice-buttons button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-weight: bold;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+  }
+  
+  .dice-buttons button:hover {
+    background-color: #0056b3;
+  }
+  

@@ -1,0 +1,35 @@
+/* src/Homepage.css */
+.homepage {
+    font-family: 'Arial', sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .homepage-header {
+    background-color: #222;
+    padding: 2rem;
+    color: white;
+    text-align: center;
+  }
+  
+  .homepage-content {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    padding: 2rem;
+    max-width: 800px;
+  }
+  
+  .homepage-feature {
+    text-align: center;
+  }
+  
+  .homepage-footer {
+    padding: 1rem;
+    background-color: #222;
+    color: white;
+    text-align: center;
+    width: 100%;
+  }
+  
