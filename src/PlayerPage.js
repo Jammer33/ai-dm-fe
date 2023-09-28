@@ -1,26 +1,81 @@
 // src/PlayerPage.js
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './PlayerPage.css';
+import { socket } from './socket';
 
 const PlayerPage = () => {
   const [inputText, setInputText] = useState('');
   const [outputText, setOutputText] = useState('');
+  const [sessionToken, setSessionToken] = useState('');
   const [playerInfo, setPlayerInfo] = useState({
-    name: 'John Doe',
+    name: 'Ariel',
     characterClass: 'Wizard',
     race: 'Elf',
     level: 5,
   });
 
+  useEffect(() => {
+    console.log('PlayerPage mounted');
+    console.log('socket:', socket);
+    socket.connect();
+    
+    function onConnect() {
+      console.log('Connected to server');
+    }
+
+    function onDisconnect() {
+      console.log('Disconnected from server');
+    }
+
+    function onMessage(message) {
+      setOutputText(outputText => outputText + message);
+    }
+
+    socket.on('connect', onConnect);
+    socket.on('disconnect', onDisconnect);
+    socket.on('message', onMessage);
+    return () => {
+      socket.close();
+    };
+  }, []);
+
   const handleInputChange = (event) => {
     setInputText(event.target.value);
   };
 
+  const handleSessionTokenChange = (event) => {
+    setSessionToken(event.target.value);
+  };
+
   const handleSubmit = () => {
     // Handle form submission and update outputText
-    setOutputText(inputText);
-    // call API
-    // fetch('localhost:3000', {)
+    console.log(inputText);
+    // use websockets to send inputText to server
+    socket.emit('message', inputText, sessionToken);
+    setInputText('');
+  };
+
+  const handleNewGame = () => {
+    // use websockets to send inputText to server
+    const character1 = {
+      name: 'Ariel',
+      race: 'Elf',
+      class: 'Wizard',
+    };
+    const character2 = {
+      name: 'James',
+      race: 'Human',
+      class: 'Fighter',
+    };
+    const character3 = {
+      name: 'Connor',
+      race: 'Dwarf',
+      class: 'Cleric',
+    };
+
+      socket.emit('newGame', [character2], sessionToken);
+    setInputText('');
+    setOutputText('');
   };
 
   const handleVoiceInput = () => {
@@ -28,7 +83,7 @@ const PlayerPage = () => {
       const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
       const recognition = new SpeechRecognition();
       recognition.lang = 'en-US';
-      recognition.interimResults = false;
+      recognition.interimResults = true;
       recognition.maxAlternatives = 1;
   
       recognition.start();
@@ -54,17 +109,6 @@ const PlayerPage = () => {
         <p>Level: {playerInfo.level}</p>
       </header>
 
-      <section className="interaction">
-        <textarea
-          className="input-text"
-          value={inputText}
-          onChange={handleInputChange}
-          placeholder="Enter your message here"
-        ></textarea>
-        <button className="voice-input" onClick={handleVoiceInput}>Voice Input</button>
-        <button className="submit" onClick={handleSubmit}>Submit</button>
-      </section>
-
       <section className="output">
         <textarea
           className="output-text"
@@ -73,6 +117,26 @@ const PlayerPage = () => {
           placeholder="AI response will appear here"
         ></textarea>
       </section>
+
+      <section className="interaction">
+        <input
+          type='text'
+          className="input-text"
+          value={inputText}
+          onChange={handleInputChange}
+          placeholder="Enter your message here"
+          aria-multiline="true"
+        ></input>
+        <button className="voice-input" onClick={handleVoiceInput}>Voice Input</button>
+        <button className="submit" onClick={handleSubmit}>Submit</button>
+        <button className="submit" onClick={handleNewGame}>New Game</button>
+      </section>
+      <input
+          type='text'
+          value={sessionToken}
+          onChange={handleSessionTokenChange}
+          placeholder="Enter your session token here"
+        ></input>
     </div>
   );
 };
