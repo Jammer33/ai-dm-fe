@@ -1,0 +1,12 @@
+.pricing-page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #1a1a1a; /* Dark theme to match the aesthetics */
+    color: #ffffff;
+    padding: 0 20px;
+}
+
+.price-section {
+    margin-top: 40px;
+}

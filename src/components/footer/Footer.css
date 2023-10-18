@@ -1,0 +1,26 @@
+.footer-container {
+    width: 100%;
+    padding: 20px 0;
+    background-color: #1a1a1a; /* Same dark theme */
+    color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-top: 1px solid rgba(255, 255, 255, 0.1); /* Light border for separation */
+}
+
+.footer-links {
+    display: flex;
+    gap: 20px;
+    margin-top: 10px;
+}
+
+.footer-links a {
+    color: #ffffff;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.footer-links a:hover {
+    color: #777;
+}

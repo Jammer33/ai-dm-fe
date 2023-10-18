@@ -15,9 +15,9 @@ const PlayerPage = () => {
   });
 
   useEffect(() => {
+    console.log(document);
     console.log('PlayerPage mounted');
     console.log('socket:', socket);
-    socket.connect();
     
     function onConnect() {
       console.log('Connected to server');
@@ -27,7 +27,7 @@ const PlayerPage = () => {
       console.log('Disconnected from server');
     }
 
-    function onMessage(message) {
+    function onMessage(message: string) {
       setOutputText(outputText => outputText + message);
     }
 
@@ -39,11 +39,11 @@ const PlayerPage = () => {
     };
   }, []);
 
-  const handleInputChange = (event) => {
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setInputText(event.target.value);
   };
 
-  const handleSessionTokenChange = (event) => {
+  const handleSessionTokenChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSessionToken(event.target.value);
   };
 
@@ -80,7 +80,7 @@ const PlayerPage = () => {
 
   const handleVoiceInput = () => {
     if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
-      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
       const recognition = new SpeechRecognition();
       recognition.lang = 'en-US';
       recognition.interimResults = true;
@@ -88,12 +88,12 @@ const PlayerPage = () => {
   
       recognition.start();
   
-      recognition.addEventListener('result', (event) => {
+      recognition.addEventListener('result', (event: any) => {
         const transcript = event.results[0][0].transcript;
         setInputText(transcript);
       });
   
-      recognition.addEventListener('error', (event) => {
+      recognition.addEventListener('error', (event: any) => {
         console.error('Error occurred in recognition:', event.error);
       });
     } else {

@@ -1,0 +1,70 @@
+/* Base Button */
+.custom-btn {
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+    margin: 0px;
+    border-radius: 5px;
+    font-weight: 600;
+}
+
+/* Primary Button */
+.custom-btn.primary {
+    background-color: #952ede;
+    color: #ffffff;
+}
+
+.custom-btn.primary:hover {
+    background-color: #8a28d0;
+}
+
+/* Secondary Button */
+.custom-btn.secondary {
+    background-color: #ffffff;
+    color: #6A0DAD;
+}
+
+.custom-btn.secondary:hover {
+    background-color: #f3f3f3;
+}
+
+/* Styles for buttons on dark backgrounds */
+.custom-btn.dark-bg.primary {
+    color: #ffffff;
+    background-color: #6A0DAD;
+}
+
+.custom-btn.dark-bg.primary:hover {
+    background-color: #4A0075;
+}
+
+.custom-btn.dark-bg.secondary {
+    color: #ffffff;
+    background-color: #4e4e4e;
+}
+
+.custom-btn.dark-bg.secondary:hover {
+    background-color: #3a3a3a;
+}
+
+
+/* Styles for different sizes */
+
+/* Small Button */
+.custom-btn.small {
+    padding: 5px 10px;
+    font-size: 12px;
+}
+
+/* Medium Button (you can keep the existing padding and font-size here as default) */
+.custom-btn.medium {
+    padding: 10px 20px;
+    font-size: 16px;
+}
+
+/* Large Button */
+.custom-btn.large {
+    padding: 15px 30px;
+    font-size: 20px;
+}

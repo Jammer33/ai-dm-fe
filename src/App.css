@@ -36,3 +36,44 @@
     transform: rotate(360deg);
   }
 }
+
+/* custom fonts (Space Grotesk)*/
+@font-face {
+  font-family: "Space Grotesk";
+  src: url("fonts/SpaceGrotesk-Regular.ttf");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Space Grotesk";
+  src: url("fonts/SpaceGrotesk-Bold.ttf");
+  font-weight: bold;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Space Grotesk";
+  src: url("fonts/SpaceGrotesk-Medium.ttf");
+  font-weight: medium;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Space Grotesk";
+  src: url("fonts/SpaceGrotesk-SemiBold.ttf");
+  font-weight: semibold;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Space Grotesk";
+  src: url("fonts/SpaceGrotesk-Light.ttf");
+  font-weight: light;
+  font-style: normal;
+}
+
+/* set as default font */
+body {
+  font-family: "Space Grotesk", sans-serif;
+}

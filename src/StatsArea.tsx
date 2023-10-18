@@ -2,11 +2,19 @@
 import React, { useState } from 'react';
 import './StatsArea.css';
 
-const StatsArea = ({ playerInfo }) => {
-  const [health, setHealth] = useState(playerInfo.maxHealth);
-  const [diceResult, setDiceResult] = useState(null);
+interface PlayerInfo {
+  maxHealth: number;
+}
 
-  const rollDice = (sides) => {
+interface StatsAreaProps {
+  playerInfo: PlayerInfo;
+}
+
+const StatsArea = ({ playerInfo }: StatsAreaProps) => {
+  const [health, setHealth] = useState(playerInfo.maxHealth);
+  const [diceResult, setDiceResult] = useState("");
+
+  const rollDice = (sides: number) => {
     const result = Math.floor(Math.random() * sides) + 1;
     setDiceResult(`You rolled a d${sides}: ${result}`);
   };
