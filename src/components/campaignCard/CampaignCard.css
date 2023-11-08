@@ -1,0 +1,71 @@
+/* CampaignCard component */
+.campaign-card {
+    background: #F3f3f3;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 0px;
+    margin: 16px;
+    width: 300px; /* or any desired width */
+    transition: transform 0.3s ease-in-out;
+    min-height: 450px; /* or any desired height */
+  }
+  
+  .campaign-card:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+  
+  .campaign-card__image {
+    width: 100%;
+    height: 200px; /* fixed height, or could be responsive as well */
+    object-fit: cover;
+    border-radius: 4px 4px 0px 0px;
+  }
+  
+  /* Typography and Buttons inside CampaignCard - Assuming global styles are set for these, only specific adjustments needed */
+  
+  .campaign-card .button--primary {
+    background-color: #5c6ac4; /* Example primary color */
+  }
+  
+  .campaign-card .button--secondary {
+    background-color: #ecc94b; /* Example secondary color */
+  }
+  
+  .campaign-card .typography--large {
+    font-size: 1.25rem; /* Example large text */
+  }
+  
+  .campaign-card .typography--small {
+    font-size: 0.875rem; /* Example small text */
+    color: #666; /* Example grey text color */
+  }
+  
+  /* Status Indicator */
+  .campaign-card .status--active {
+    color: #48bb78; /* green */
+  }
+  
+  .campaign-card .status--inactive {
+    color: #e53e3e; /* red */
+  }
+  
+  /* Layout-specific adjustments */
+  .campaign-card .flexbox--column {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .campaign-card .flexbox--row {
+    display: flex;
+    flex-direction: row;
+  }
+  
+  /* Responsive design adjustments */
+  @media (max-width: 768px) {
+    .campaign-card {
+      width: 100%;
+      margin: 8px 0;
+    }
+  }
+  

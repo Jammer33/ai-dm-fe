@@ -8,6 +8,7 @@ interface FlexContainerProps {
   className?: string;
   style?: CSSProperties;
   children: ReactNode;
+  color?: string;
 }
 
 const FlexBox: FC<FlexContainerProps> = ({
@@ -18,6 +19,7 @@ const FlexBox: FC<FlexContainerProps> = ({
   className,
   style,
   children,
+  color,
 }) => {
   const flexStyle: CSSProperties = {
     display: 'flex',
@@ -25,6 +27,7 @@ const FlexBox: FC<FlexContainerProps> = ({
     justifyContent: justify,
     alignItems: align,
     flexWrap: wrap,
+    backgroundColor: color,
     ...style,
   };
 

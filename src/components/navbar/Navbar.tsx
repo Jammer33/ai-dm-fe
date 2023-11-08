@@ -14,7 +14,7 @@ interface NavbarProps {
 const Navbar: React.FC<NavbarProps> = () => {
     return (
         <div className="navbar">
-            <img src="logo.png" alt="Wizard GM Logo" className="navbar-logo" />
+            <Link to='/'><img src="logo.png" alt="Wizard GM Logo" className="navbar-logo" /></Link>
             <div className="navbar-items">
                 <a href="#">About</a>
                 <Link to="/pricing">Pricing</Link>

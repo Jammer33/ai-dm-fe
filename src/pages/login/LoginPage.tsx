@@ -5,14 +5,16 @@ import InputField from '../../components/inputField/InputField';
 import Typography from '../../components/text/Typography';
 import { Colors } from '../../colors';
 import TypographySizes from '../../TypographySizes';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Logo from '../../components/Logo';
 import Spacer from '../../components/spacer/Spacer';
+import { postLogin } from '../../api/PostLogin';
 
 const LoginPage: React.FC = () => {
     const [email, setEmail] = React.useState('');
     const [password, setPassword] = React.useState('');
     const [error, setError] = React.useState('');
+    const navigate = useNavigate();
 
     const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setEmail(event.target.value);
@@ -22,8 +24,14 @@ const LoginPage: React.FC = () => {
         setPassword(event.target.value);
     };
 
-    const handleLogin = () => {
-        
+    const handleLogin = async () => {
+        const response = await postLogin({email, password});
+        console.log(response);
+        if (!response.error) {
+            navigate('/dashboard');
+        } else {
+            setError('Invalid email or password');
+        }
     }
 
     

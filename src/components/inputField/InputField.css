@@ -25,6 +25,16 @@
     color: #FF6666;
 }
 
+.error {
+    border-color: #FF6666;
+    border-width: 2px;
+}
+
+.error:focus {
+    outline: none;
+    border: 2px solid #FF6666;
+}
+
 .header {
     text-align: left;
 }

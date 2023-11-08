@@ -7,6 +7,7 @@
     margin: 0px;
     border-radius: 5px;
     font-weight: 600;
+    min-width: 80px;
 }
 
 /* Primary Button */
@@ -59,12 +60,12 @@
 
 /* Medium Button (you can keep the existing padding and font-size here as default) */
 .custom-btn.medium {
-    padding: 10px 20px;
+    padding: 8px 20px;
     font-size: 16px;
 }
 
 /* Large Button */
 .custom-btn.large {
-    padding: 15px 30px;
+    padding: 12px 30px;
     font-size: 20px;
 }

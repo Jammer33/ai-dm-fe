@@ -1,0 +1,41 @@
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0rem 2rem;
+    background-color: #282828; /* Adjust the color as per the image */
+}
+
+.navbar-logo {
+    height: 80px; /* Adjust as needed */
+}
+
+.navbar-items {
+    display: flex;
+    gap: 2rem;
+}
+
+.navbar-items a {
+    text-decoration: none;
+    color: white; /* Adjust the color as per the image */
+    font-weight: bold;
+    transition: color 0.3s ease;
+}
+
+.navbar-items a:hover {
+    color: #888; /* Adjust the hover color as per the image */
+}
+
+.navbar-login {
+    background-color: #444; /* Adjust the color as per the image */
+    color: white;
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.navbar-login:hover {
+    background-color: #555; /* Adjust the hover color as per the image */
+}

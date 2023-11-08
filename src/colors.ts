@@ -3,8 +3,11 @@ export enum Colors {
     SECONDARY = '#e74c3c',
     TERTIARY = '#f39c12',
     BLACK = '#000',
-    DARKGRAY = '#2c3e50',
+    DARKGRAY = '',
     WHITE = '#fff',
-    GRAY = '#7f8c8d'
+    GRAY = '#7f8c8d',
+    ERROR = '#FF6666',
+    GREEN = '#4CAF50',
+
     // ... You can add as many colors as you like here
 }

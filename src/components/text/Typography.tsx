@@ -1,9 +1,10 @@
 import React from 'react';
 import { Colors } from '../../colors';
 import TypographySizes from '../../TypographySizes';
+import './Typography.css';
 
 interface TypographyProps {
-    size?: TypographySizes;
+    size?: "small" | "medium" | "large" | "xlarge" | "xxlarge" | number | string;
     color?: Colors;
     weight?: 'normal' | 'bold' | 'bolder' | 'lighter';
     style?: 'normal' | 'italic' | 'oblique';
@@ -14,7 +15,7 @@ interface TypographyProps {
 }
 
 const Typography: React.FC<TypographyProps> = ({
-    size = '16px',
+    size = 'medium',
     color = Colors.BLACK,  // Set default color as BLACK from our enum
     weight = 'normal',
     style = 'normal',
@@ -23,8 +24,15 @@ const Typography: React.FC<TypographyProps> = ({
     lineHeight,
     children = null, // This is the text that we want to display
 }) => {
+    const sizeMap: { [key: string]: string } = {
+        small: TypographySizes.SMALL,
+        medium: TypographySizes.MEDIUM,
+        large: TypographySizes.LARGE,
+        xlarge: TypographySizes.XLARGE,
+    };
+
     const textStyles = {
-        fontSize: size,
+        fontSize: typeof size === 'string' ? sizeMap[size] : `${size}px`,
         color: color,
         fontWeight: weight,
         fontStyle: style,

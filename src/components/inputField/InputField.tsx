@@ -6,19 +6,25 @@ import TypographySizes from '../../TypographySizes';
 
 interface Props {
   type: string;
-  header: string;
+  header?: string;
   required?: boolean;
   onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  error?: string;
+  placeholder?: string;
+  className?: string;
+  name?: string;
 }
 
-const InputField: React.FC<Props> = ({ type, header, required = false, onChange }) => {
+const InputField: React.FC<Props> = ({ type, header = '', required = false, onChange, error = false, placeholder = '', className = "", name = ""}) => {
   return (
-    <div className="input-container">
+    <div className={`input-container ${className}`}>
         <div>
-            <Typography color={Colors.WHITE} size={TypographySizes.MEDIUM} lineHeight={10}>{header}</Typography>
+            {!!header && <Typography weight="bold" color={Colors.WHITE} size={TypographySizes.MEDIUM} lineHeight={10}>{header}</Typography>}
             {required ? <span className="required"> *</span> : ''}
         </div>
-        <input className="input-field" type={type} onChange={onChange}/>
+        {/* input with input-field classname but error classname optional  */}
+        <input name={name} placeholder={placeholder} className={`${!!error ? 'error' : ''} input-field`} type={type} onChange={onChange}/>
+        {!!error && <Typography color={Colors.ERROR} alignment="center" weight="bold">{error}</Typography>}
     </div>
 
   );
