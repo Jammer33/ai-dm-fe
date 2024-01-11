@@ -1,16 +1,16 @@
+import { Typography } from '@mui/joy';
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 interface LinkProps {
     href: string;
-    children: React.ReactNode;
+    text: string;
 }
 
-const Link: React.FC<LinkProps> = ({ href, children }) => {
+const LinkTypography: React.FC<LinkProps> = ({ href, text }) => {
     return (
-        <a href={href} style={{ color: 'lightblue' }}>
-            {children}
-        </a>
+        <Link to="/forgot-password"><Typography level="body-sm" color="primary">Forgot Password?</Typography></Link>
     );
 };
 
-export default Link;
+export default LinkTypography;

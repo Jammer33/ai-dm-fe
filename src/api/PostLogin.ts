@@ -10,10 +10,10 @@ export type LoginRequest = {
     password: string;
 };
 
-const host = process.env.REACT_APP_API_HOST || 'localhost';
+const host = process.env.REACT_APP_API_HOST;
 
 
 export const postLogin = async (request: LoginRequest): Promise<LoginResponse> => {
-  const response = await axios.post<LoginResponse>(`https://localhost:3001/user/login`, request, {withCredentials: true});
+  const response = await axios.post<LoginResponse>(host + `/user/login`, request, {withCredentials: true});
   return response.data;
 };

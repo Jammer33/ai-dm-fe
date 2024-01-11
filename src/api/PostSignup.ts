@@ -10,10 +10,10 @@ export type SignupRequest = {
     password: string;
 };
 
-const host = process.env.REACT_APP_API_HOST || 'localhost';
+const host = process.env.REACT_APP_API_HOST
 
 
 export const postSignup = async (request: SignupRequest): Promise<SignupResponse> => {
-  const response = await axios.post<SignupResponse>(`https://localhost:3001/user/signup`, request, {withCredentials: true});
+  const response = await axios.post<SignupResponse>(host + `/user/signup`, request, {withCredentials: true});
   return response.data;
 };
