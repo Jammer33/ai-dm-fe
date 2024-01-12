@@ -12,14 +12,15 @@ import CampaignPage from './pages/campaign/CampaignPage';
 import Dashboard from './pages/dashboard/Dashboard';
 import CreateCampaignPage from './pages/createCampaign/CreateCampaignPage';
 import '@fontsource/space-grotesk';
+import '@fontsource/inter';
 import ProtectedRoute from './util/ProtectedRoute';
 import { Box, CssVarsProvider, Sheet, Stack, extendTheme } from '@mui/joy';
 
 const theme = extendTheme({
   spacing: 0,
   fontFamily: {
-    display: 'Space Grotesk',
-    body: 'Space Grotesk',
+    // display: 'Space Grotesk',
+    // body: 'Space Grotesk',
   },
   colorSchemes: {
     dark: {
@@ -52,9 +53,9 @@ function App() {
               <Route path="/pricing" element={<PricingPage />} />
               <Route path="/signup" element={<SignupPage />} />
               <Route path="/login" element={<LoginPage />} />
-              <Route path='/campaign' element={<CampaignPage />} />
+              <Route path='/campaign' element={<ProtectedRoute><CampaignPage /></ProtectedRoute>} />
               <Route path='/dashboard' element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-              <Route path='/create-campaign' element={<CreateCampaignPage />} />
+              <Route path='/create-campaign' element={<ProtectedRoute><CreateCampaignPage /></ProtectedRoute>} />
             </Routes>
         </Router>
       </AuthProvider>

@@ -5,10 +5,11 @@ import CampaignList from '../../components/campaignCard/CampaignList';
 import DashboardMainArea from './components/DashboardMainArea';
 import DashboardNavbar from '../../components/dashboardNavbar/DashboardNavbar';
 import Container from '../../components/container/Container';
+import { Sheet } from '@mui/joy';
 
 const Dashboard: React.FC = () => {
   return (
-    <Fragment>
+    <Sheet>
         <DashboardNavbar />
         <Container>
             <DashboardMainArea 
@@ -77,9 +78,8 @@ const Dashboard: React.FC = () => {
                     
             ]}  
             />
-
         </Container>
-    </Fragment>
+    </Sheet>
   );
 };
 

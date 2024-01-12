@@ -1,11 +1,8 @@
 import React from 'react';
-import Container from '../container/Container';
-import Spacer from '../spacer/Spacer';
-import Typography from '../text/Typography';
-import FlexBox from '../flexBox/FlexBox';
-import Button from '../button/Button';
-import { Colors } from '../../colors';
 import './CampaignCard.css';
+import { AspectRatio, Button, ButtonGroup, Card, CardContent, CardOverflow, Stack, Typography } from '@mui/joy';
+import { Spa } from '@mui/icons-material';
+import Spacer from '../spacer/Spacer';
 
 export interface CampaignCardProps {
   token: string;
@@ -31,30 +28,42 @@ const CampaignCard = ({ token, title, description, imageUrl, nextSession, status
     };
 
     return (
-            <FlexBox direction="column" align="center" justify="space-between" className="campaign-card">
-                <img src={imageUrl} alt={`${title} thumbnail`} className="campaign-card__image" />
-                <Spacer direction="vertical" size="8px" />
-                <Typography size="large" weight="bold">{title}</Typography>
-                
-                <Typography alignment='center'>{description}</Typography>
-
-                <Spacer direction="vertical" size="4px" />
-                <Typography size="small" color={Colors.GRAY}>Next Session: {nextSession.toDateString()}</Typography>
-                <Typography size="small" color={status === 'active' ? Colors.GREEN : Colors.ERROR}>{status.toUpperCase()}</Typography>
-                <Spacer direction="vertical" size="12px" />
-                <FlexBox direction="column">
-                    <FlexBox justify="space-around" align="center">
-                        <Button type="Primary" size="Small" onClick={onPlay}>Play</Button>
-                            <Spacer direction="horizontal" size="8px" />
-                        <Button type="Secondary" size="Small" onClick={onView}>View</Button>
-                            <Spacer direction="horizontal" size="8px" />
-                        <Button type="Secondary" size="Small" onClick={onDelete}>
-                            <Typography size="small" weight="bold" color={Colors.SECONDARY} >Delete</Typography>
+            <Card size="md" variant="outlined" sx={{
+                width: "220px",
+                height: "350px",
+                margin: "16px",
+            }}>
+                <CardOverflow >
+                <AspectRatio ratio="1.7">
+                    <img src={imageUrl} alt={`${title} thumbnail`} className="campaign-card__image" />
+                </AspectRatio>
+                </CardOverflow>
+                <CardContent>
+                    <Stack spacing={1}>
+                        <Typography level="title-md">{title}</Typography>
+                        <Typography level="body-sm" sx={{ maxLines: 3 }}>{description}</Typography>
+                    </Stack>
+                </CardContent>
+                {/* Buttons */}
+                <Stack direction="row" justifyContent={"space-between"}>
+                    <Button size="sm" color="danger" variant="plain" onClick={onDelete} sx={{fontWeight: 500, fontSize: "12px"}}>
+                        Delete
+                    </Button>
+                    <ButtonGroup >
+                        <Button size="md" onClick={onView} sx={{fontWeight: 500, fontSize: "12px"}}>
+                            View
                         </Button>
-                    </FlexBox>
-                    <Spacer direction="vertical" size="8px" />
-                </FlexBox>
-            </FlexBox>
+                        <Button size="sm" variant="solid" color="primary" onClick={onPlay} sx={{fontWeight: 500, fontSize: "12px"}}>
+                            <Spacer direction="horizontal" size="4px" />
+                            Play
+                            <Spacer direction="horizontal" size="4px" />
+                        </Button>
+                    </ButtonGroup>
+                </Stack>
+
+
+                
+            </Card>
     );
 };
 

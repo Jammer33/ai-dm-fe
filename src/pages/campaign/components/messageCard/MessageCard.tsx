@@ -1,16 +1,13 @@
 import React from 'react';
-import FlexBox from '../../../../components/flexBox/FlexBox';
 import Spacer from '../../../../components/spacer/Spacer';
-import Typography from '../../../../components/text/Typography';
-import TypographySizes from '../../../../TypographySizes';
+import { Avatar, Box, Card, Stack, Typography } from '@mui/joy';
 
 
 interface MessageCardProps {
   alignment: 'left' | 'right' | 'center';
-  avatarSrc: string;
+  avatarSrc?: string;
   name: string;
   messageText: string;
-  bgColor: string;
 }
 
 const MessageCard: React.FC<MessageCardProps> = ({
@@ -18,29 +15,43 @@ const MessageCard: React.FC<MessageCardProps> = ({
   avatarSrc,
   name,
   messageText,
-  bgColor,
 }) => {
   // Determine justify-content based on alignment
   let justify: 'flex-start' | 'flex-end' | 'center' = 'flex-start';
   if (alignment === 'right') justify = 'flex-end';
   if (alignment === 'center') justify = 'center';
 
+  let direction: 'row' | 'row-reverse' = 'row';
+  if (alignment === 'right') direction = 'row-reverse';
+
+  let cardVarient: 'solid' | 'soft' = 'solid';
+  if (alignment === 'left') cardVarient = 'soft';
+
+  let isUser = alignment === 'right';
+
   return (
-    <FlexBox direction="column" justify={justify}>
-      <div style={{ backgroundColor: bgColor, borderRadius: '8px', padding: '10px' }}>
-        <FlexBox>
-          <img src={avatarSrc} alt={name} style={{ width: '40px', height: '40px', borderRadius: '50%' }} />
-          <Spacer direction="horizontal" size="10px" />
-          <div>
-            <Typography size={TypographySizes.SMALL} weight="bold">
-              {name}
-            </Typography>
-            <Spacer direction="vertical" size="5px" />
-            <Typography size={TypographySizes.SMALL}>{messageText}</Typography>
-          </div>
-        </FlexBox>
-      </div>
-    </FlexBox>
+    <Stack direction={direction} alignItems="center">
+      <Spacer direction="horizontal" size="16px" />
+      <Avatar src={avatarSrc} alt={name} sx={{backgroundColor: isUser ? "background.level2" : ""}}/>
+      <Spacer direction="horizontal" size="16px" />
+      <Card size="sm" sx={{width: "fit-content", backgroundColor: isUser ? "background.level2" : ""}} variant={cardVarient}>
+        <Stack direction="column" justifyContent={justify}>
+          <Stack sx={{ borderRadius: '8px', padding: '10px' }}>
+            <Stack direction="row">
+              
+              <Spacer direction="horizontal" size="10px" />
+              <Stack alignItems={justify}>
+                <Typography level="title-sm">
+                  {name}
+                </Typography>
+                <Spacer direction="vertical" size="5px" />
+                <Typography level="body-sm">{messageText}</Typography>
+              </Stack>
+            </Stack>
+          </Stack>
+        </Stack>
+      </Card>
+    </Stack>
   );
 };
 

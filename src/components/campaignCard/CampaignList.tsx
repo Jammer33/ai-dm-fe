@@ -1,12 +1,10 @@
 import React from 'react';
 import CampaignCard, { CampaignCardProps } from './CampaignCard';
 import FlexBox from '../flexBox/FlexBox';
-import InputField from '../inputField/InputField';
-import Button from '../button/Button';
-import Typography from '../text/Typography';
 import { Colors } from '../../colors';
 import Spacer from '../spacer/Spacer';
 import { useNavigate } from 'react-router-dom';
+import { Button, Input, Typography } from '@mui/joy';
 
 interface Props {
     campaigns: CampaignCardProps[];
@@ -28,13 +26,14 @@ const CampaignList = ({ campaigns }: Props) => {
     }
 
     return (
-        <FlexBox color={Colors.DARKGRAY} justify="space-between" align="center" direction="column" style={{borderRadius: "10px"}}>
+        <FlexBox justify="space-between" align="center" direction="column" style={{borderRadius: "10px"}}>
             <FlexBox direction="row" align="center"> 
-                <Button type="Primary" size="Large" onClick={handleCreateCampaign}>
-                    <Typography size="medium" weight="bold" color={Colors.WHITE}>Create New Campaign</Typography>
+                <Button size="md" onClick={handleCreateCampaign}>
+                    Create New Campaign
                 </Button>   
                 <Spacer direction="horizontal" size="16px" />
-                <InputField
+                <Input
+                    size="md"
                     type="text"
                     placeholder="Search Campaigns"
                     onChange={handleSearchChange}
