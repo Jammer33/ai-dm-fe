@@ -13,7 +13,11 @@ const PricingPage: React.FC = () => {
                 subtitle="Immerse yourself in endless narratives and unlimited possibilities. All at one simple price."
             />
 
-            <div className="price-section">
+            <div style={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+            }}>
                 <PriceCard price={30} buttonText="Subscribe Now" />
             </div>
 
