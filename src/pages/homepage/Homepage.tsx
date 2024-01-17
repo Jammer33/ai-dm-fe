@@ -38,11 +38,11 @@ const Homepage = () => {
     <div>
       <Navbar />
       <Hero
-        title='Embark on a Journey Where You Are the Story...'
-        subtitle='...become a noble hero rescuing a kingdom in peril, a cunning rogue mastering the art of deception, or a wise sorcerer unlocking the secrets of the arcane. Explore a place where imagination is your only limit.'
+        title='Embark on a Journey Where You Are the Story'
+        subtitle='become a noble hero rescuing a kingdom in peril, a cunning rogue mastering the art of deception, or a wise sorcerer unlocking the secrets of the arcane. Explore a place where imagination is your only limit.'
       />
       <ValueProp 
-        image='value_prop_1.png' 
+        images={['value_prop_1.png']} 
         title="Unlimited Freedom: The Choices are Yours" 
         bodyText="From “Choose Your Own Adventure” books to this: a world where every decision you make shapes the narrative in real-time. Your choices, your story."
         isTextLeft={false}
@@ -54,7 +54,7 @@ const Homepage = () => {
 Team up with friends to explore enchanted forests, delve into dark dungeons, and conquer epic quests. Our Multiplayer Experience lets you share the triumphs and tribulations of your unique adventure. Because every story becomes legendary when shared. */}
 
       <ValueProp
-        image='value_prop_2.png'
+        images={['human.png', 'elf.png', 'dragonborn.png', 'tiefling.png']}
         title="It's Dangerous to Go Alone! Take This."
         bodyText="Team up with friends to explore enchanted forests, delve into dark dungeons, and conquer epic quests. Our Multiplayer Experience lets you share the triumphs and tribulations of your unique adventure. Because every story becomes legendary when shared."
         isTextLeft={true}
@@ -67,9 +67,9 @@ Every decision, every interaction, every twist in your adventure is unique. Why 
 Selected moments are not just plain text! Dive deeper into the story with AI-generated scenes painting a vivid picture of your adventure. */}
 
       <ValueProp
-        image='value_prop_3.png'
+        images={['photo.png']}
         title="Capture and Share Epic Moments!"
-        bodyText="Every decision, every interaction, every twist in your adventure is unique. Why keep it to yourself? With our Share this Moment tool, immortalize those epic moments in your campaign, turning them into stories waiting to be told. \n\n Selected moments are not just plain text! Dive deeper into the story with AI-generated scenes painting a vivid picture of your adventure."
+        bodyText="Every decision, every interaction, every twist in your adventure is unique. Why keep it to yourself? With our Share this Moment tool, immortalize those epic moments in your campaign, turning them into stories waiting to be told. Selected moments are not just plain text! Dive deeper into the story with AI-generated scenes painting a vivid picture of your adventure."
         isTextLeft={false}
       />
       <SignupCTA />
