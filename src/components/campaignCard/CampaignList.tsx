@@ -40,8 +40,8 @@ const CampaignList = ({ campaigns }: Props) => {
                 />
             </FlexBox>
             <FlexBox direction="row" wrap="wrap" justify="center" align="flex-start">
-            {filteredCampaigns.map(campaign => (
-                <CampaignCard
+            {filteredCampaigns.map((campaign,idx) => (
+                <CampaignCard key={idx}
                 {...campaign}
                 />
             ))}
