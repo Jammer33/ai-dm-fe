@@ -19,15 +19,9 @@ const ForgotPasswordPage: React.FC = () => {
     };
 
     const handleSendEmail = async () => {
-        try {
-            const response = await postSendEmail({email});
-
-            if (!response.error) {
-                navigate('/login');
-            }
-        } catch (error) {
-            setError("Invalid email or password");
-        }
+        postSendEmail({email});
+        alert('Email submitted successfully. Check your inbox!');
+        navigate('/login');
     }
 
     return (
@@ -73,7 +67,7 @@ const ForgotPasswordPage: React.FC = () => {
             {!!error && <Alert sx={{ backgroundColor: "background.level1", padding: "4px 0" }} size="sm" color="danger" variant="plain"><InfoOutlined /> {error}</Alert>}
             <Spacer size={20} direction="vertical" />
 
-            <Button type="submit" onClick={handleSendEmail}>Send Email</Button>
+            <Button type="submit" onClick={handleSendEmail}>Submit</Button>
             
             <Spacer size={4} direction="vertical" />
             <Typography level="body-sm">Don't have an account?<Link style={{display: "inline"}} to="/signup"> Signup</Link></Typography>
