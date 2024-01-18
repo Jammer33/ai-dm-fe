@@ -33,7 +33,7 @@ const ValueProp: React.FC<ValuePropProps> = ({ images, title, bodyText, isTextLe
                 padding: "0 20px",
                 [theme.breakpoints.down('md')]: {
                     width: "100%",
-                    flexDirection: "column",
+                    flexDirection: "column-reverse",
                 },
             }}
             >
@@ -59,6 +59,7 @@ const ValueProp: React.FC<ValuePropProps> = ({ images, title, bodyText, isTextLe
                     padding: "0 20px",
                     [theme.breakpoints.down('md')]: {
                         width: "400px",
+                        marginBottom: "26px",
                     },
                     [theme.breakpoints.down('sm')]: {
                         width: "300px",
