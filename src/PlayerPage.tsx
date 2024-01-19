@@ -31,9 +31,20 @@ const PlayerPage = () => {
       setOutputText(outputText => outputText + message);
     }
 
+    function onNewGame(sessionToken: string) { 
+      setSessionToken(sessionToken);
+    }
+
+    function onConnectErr(err: any) {
+      console.log(`connect_error due to ${err.message}`); 
+    }
+
     socket.on('connect', onConnect);
     socket.on('disconnect', onDisconnect);
     socket.on('message', onMessage);
+    socket.on('newGame', onNewGame);
+    socket.on('connect_error', onConnectErr);
+
     return () => {
       socket.close();
     };
@@ -73,7 +84,7 @@ const PlayerPage = () => {
       class: 'Cleric',
     };
 
-      socket.emit('newGame', [character2], sessionToken);
+    socket.emit('newGame', [character2]);
     setInputText('');
     setOutputText('');
   };
