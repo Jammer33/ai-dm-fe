@@ -57,9 +57,9 @@ function App() {
               <Route path="/login" element={<LoginPage />} />
               <Route path="/forgot-password" element={<ForgotPasswordPage />} />
               <Route path="/reset-password" element={<ResetPasswordPage />} />
-              <Route path='/campaign' element={<CampaignPage />} />
-              <Route path='/dashboard' element={<Dashboard />} />
-              <Route path='/create-campaign' element={<CreateCampaignPage />} />
+              <Route path='/campaign' element={<ProtectedRoute><CampaignPage /></ProtectedRoute>} />
+              <Route path='/dashboard' element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+              <Route path='/create-campaign' element={<ProtectedRoute><CreateCampaignPage /></ProtectedRoute>} />
             </Routes>
         </Router>
       </AuthProvider>
