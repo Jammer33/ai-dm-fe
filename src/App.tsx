@@ -7,6 +7,8 @@ import React from 'react';
 import PricingPage from './pages/pricing/PricingPage';
 import SignupPage from './pages/signup/SignupPage';
 import LoginPage from './pages/login/LoginPage';
+import ForgotPasswordPage from './pages/forgotPassword/ForgotPassword';
+import ResetPasswordPage from './pages/resetPassword/ResetPasswordPage';
 import { AuthProvider } from './provider/AuthProvider';
 import CampaignPage from './pages/campaign/CampaignPage';
 import Dashboard from './pages/dashboard/Dashboard';
@@ -53,6 +55,8 @@ function App() {
               <Route path="/pricing" element={<PricingPage />} />
               <Route path="/signup" element={<SignupPage />} />
               <Route path="/login" element={<LoginPage />} />
+              <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+              <Route path="/reset-password" element={<ResetPasswordPage />} />
               <Route path='/campaign' element={<ProtectedRoute><CampaignPage /></ProtectedRoute>} />
               <Route path='/dashboard' element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
               <Route path='/create-campaign' element={<ProtectedRoute><CreateCampaignPage /></ProtectedRoute>} />
