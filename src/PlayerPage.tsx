@@ -35,6 +35,20 @@ const PlayerPage = () => {
       setSessionToken(sessionToken);
     }
 
+    function onJoinGame(previousMessagesStr: string) {
+      var previousMessages = new Map<String, String>(JSON.parse(previousMessagesStr));
+    
+      if(previousMessages.has("DM")) {
+        let message : String = previousMessages.get("DM") ?? "";
+        setOutputText(outputText => outputText + "\n" + message + "\n");
+        previousMessages.delete("DM");
+      }
+
+      previousMessages.forEach((message, player) => {
+        setOutputText(outputText => outputText + "\n" + player + ": " + message + "\n");
+      });
+    }
+
     function onConnectErr(err: any) {
       console.log(`connect_error due to ${err.message}`); 
     }
@@ -43,6 +57,7 @@ const PlayerPage = () => {
     socket.on('disconnect', onDisconnect);
     socket.on('message', onMessage);
     socket.on('newGame', onNewGame);
+    socket.on('joinGame', onJoinGame);
     socket.on('connect_error', onConnectErr);
 
     return () => {
@@ -87,6 +102,10 @@ const PlayerPage = () => {
     socket.emit('newGame', [character2]);
     setInputText('');
     setOutputText('');
+  };
+
+  const handleJoinGame = () => {
+    socket.emit('joinGame', sessionToken);
   };
 
   const handleVoiceInput = () => {
@@ -141,6 +160,7 @@ const PlayerPage = () => {
         <button className="voice-input" onClick={handleVoiceInput}>Voice Input</button>
         <button className="submit" onClick={handleSubmit}>Submit</button>
         <button className="submit" onClick={handleNewGame}>New Game</button>
+        <button className="submit" onClick={handleJoinGame}>Join Game</button>
       </section>
       <input
           type='text'
