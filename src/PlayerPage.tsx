@@ -27,7 +27,21 @@ const PlayerPage = () => {
       console.log('Disconnected from server');
     }
 
-    function onMessage(message: string) {
+    function onReply(message: string) {
+      let formattedObj = new Map<String, String>(JSON.parse(message));
+
+      if(formattedObj.has("player")) {
+        let player = formattedObj.get("player") ?? "";
+        setOutputText(outputText => outputText + "\n" + player + "\n");
+      }
+      
+      if(formattedObj.has("message")) {
+        let playerMessage = formattedObj.get("message") ?? "";
+        setOutputText(outputText => outputText + "\n" + playerMessage + "\n");
+      }
+    }
+
+    function onDMMessage(message: string) {
       setOutputText(outputText => outputText + message);
     }
 
@@ -55,7 +69,8 @@ const PlayerPage = () => {
 
     socket.on('connect', onConnect);
     socket.on('disconnect', onDisconnect);
-    socket.on('message', onMessage);
+    socket.on('reply', onReply);
+    socket.on('DMessage', onDMMessage);
     socket.on('newGame', onNewGame);
     socket.on('joinGame', onJoinGame);
     socket.on('connect_error', onConnectErr);
@@ -77,7 +92,7 @@ const PlayerPage = () => {
     // Handle form submission and update outputText
     console.log(inputText);
     // use websockets to send inputText to server
-    socket.emit('message', inputText, sessionToken);
+    socket.emit('reply', inputText, sessionToken);
     setInputText('');
   };
 
