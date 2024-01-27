@@ -11,6 +11,10 @@ interface DashboardNavbarProps {
     // Any additional props for Navbar can be defined here
 }
 
+const handleSignOut = async () => {
+    //add funtionality
+}
+
 const DashboardNavbar: React.FC<DashboardNavbarProps> = () => {
     const username = useAuth().user?.username;
 
@@ -21,7 +25,8 @@ const DashboardNavbar: React.FC<DashboardNavbarProps> = () => {
             justifyContent: "space-between",
         }}>
             <Link href='/dashboard'><img src="logo.png" alt="Wizard GM Logo" className="navbar-logo" /></Link>
-            <Stack direction="row" sx={{marginLeft: "-90px"}}>
+            <h3>Wizard GM</h3>
+            <Stack direction="row" sx={{ marginLeft: "auto", marginRight: "20px" }}>
                 <Link color="neutral" href="/dashboard">Dashboard</Link>
                 <Spacer direction="horizontal" size="16px" />
                 <Link color="neutral" href="/account">Account</Link>
@@ -30,6 +35,7 @@ const DashboardNavbar: React.FC<DashboardNavbarProps> = () => {
                 {/* Account username */}
                 <p>{username}</p>
             </FlexBox>
+            <Link href="/login" sx={{ marginLeft: "auto", marginRight: "20px" }}><Button type='Primary' onDarkBackground onClick={handleSignOut}>Sign Out</Button></Link>
         </Stack>
     );
 }
