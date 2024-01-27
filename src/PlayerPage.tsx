@@ -27,13 +27,54 @@ const PlayerPage = () => {
       console.log('Disconnected from server');
     }
 
-    function onMessage(message: string) {
+    function onReply(message: string) {
+      let formattedObj = new Map<String, String>(JSON.parse(message));
+
+      if(formattedObj.has("player")) {
+        let player = formattedObj.get("player") ?? "";
+        setOutputText(outputText => outputText + "\n" + player + "\n");
+      }
+      
+      if(formattedObj.has("message")) {
+        let playerMessage = formattedObj.get("message") ?? "";
+        setOutputText(outputText => outputText + "\n" + playerMessage + "\n");
+      }
+    }
+
+    function onDMMessage(message: string) {
       setOutputText(outputText => outputText + message);
+    }
+
+    function onNewGame(sessionToken: string) { 
+      setSessionToken(sessionToken);
+    }
+
+    function onJoinGame(previousMessagesStr: string) {
+      var previousMessages = new Map<String, String>(JSON.parse(previousMessagesStr));
+    
+      if(previousMessages.has("DM")) {
+        let message : String = previousMessages.get("DM") ?? "";
+        setOutputText(outputText => outputText + "\n" + message + "\n");
+        previousMessages.delete("DM");
+      }
+
+      previousMessages.forEach((message, player) => {
+        setOutputText(outputText => outputText + "\n" + player + ": " + message + "\n");
+      });
+    }
+
+    function onConnectErr(err: any) {
+      console.log(`connect_error due to ${err.message}`); 
     }
 
     socket.on('connect', onConnect);
     socket.on('disconnect', onDisconnect);
-    socket.on('message', onMessage);
+    socket.on('reply', onReply);
+    socket.on('DMessage', onDMMessage);
+    socket.on('newGame', onNewGame);
+    socket.on('joinGame', onJoinGame);
+    socket.on('connect_error', onConnectErr);
+
     return () => {
       socket.close();
     };
@@ -51,7 +92,7 @@ const PlayerPage = () => {
     // Handle form submission and update outputText
     console.log(inputText);
     // use websockets to send inputText to server
-    socket.emit('message', inputText, sessionToken);
+    socket.emit('reply', inputText, sessionToken);
     setInputText('');
   };
 
@@ -73,9 +114,13 @@ const PlayerPage = () => {
       class: 'Cleric',
     };
 
-      socket.emit('newGame', [character2], sessionToken);
+    socket.emit('newGame', [character2]);
     setInputText('');
     setOutputText('');
+  };
+
+  const handleJoinGame = () => {
+    socket.emit('joinGame', sessionToken);
   };
 
   const handleVoiceInput = () => {
@@ -130,6 +175,7 @@ const PlayerPage = () => {
         <button className="voice-input" onClick={handleVoiceInput}>Voice Input</button>
         <button className="submit" onClick={handleSubmit}>Submit</button>
         <button className="submit" onClick={handleNewGame}>New Game</button>
+        <button className="submit" onClick={handleJoinGame}>Join Game</button>
       </section>
       <input
           type='text'
