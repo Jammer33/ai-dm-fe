@@ -63,8 +63,14 @@ const PlayerPage = () => {
       });
     }
 
+    function onServerError(err: any) {
+      console.log(`error due to ${err}`);
+      setOutputText(outputText => outputText + err.toString());
+    }
+
     function onConnectErr(err: any) {
       console.log(`connect_error due to ${err.message}`); 
+      setOutputText(outputText => outputText + err.toString());
     }
 
     socket.on('connect', onConnect);
@@ -73,6 +79,7 @@ const PlayerPage = () => {
     socket.on('DMessage', onDMMessage);
     socket.on('newGame', onNewGame);
     socket.on('joinGame', onJoinGame);
+    socket.on('error', onServerError);
     socket.on('connect_error', onConnectErr);
 
     return () => {
