@@ -30,12 +30,15 @@ const DashboardNavbar: React.FC<DashboardNavbarProps> = () => {
                 <Link color="neutral" href="/dashboard">Dashboard</Link>
                 <Spacer direction="horizontal" size="16px" />
                 <Link color="neutral" href="/account">Account</Link>
+                <Spacer direction="horizontal" size="16px" />
+                <Link color="neutral" href="/create-campaign">Join game</Link>
             </Stack>
             <FlexBox>
                 {/* Account username */}
                 <p>{username}</p>
             </FlexBox>
             <Link href="/login" sx={{ marginLeft: "auto", marginRight: "20px" }}><Button type='Primary' onDarkBackground onClick={handleSignOut}>Sign Out</Button></Link>
+            
         </Stack>
     );
 }
