@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
-import { Route, useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const ProtectedRoute = (props: any) => {
     const navigate = useNavigate();

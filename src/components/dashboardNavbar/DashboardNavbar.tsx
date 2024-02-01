@@ -16,7 +16,7 @@ const handleSignOut = async () => {
 }
 
 const DashboardNavbar: React.FC<DashboardNavbarProps> = () => {
-    const username = useAuth().user?.username;
+    // const username = useAuth().user?.username;
 
     return (
         <Stack direction="row" sx={{
@@ -31,10 +31,10 @@ const DashboardNavbar: React.FC<DashboardNavbarProps> = () => {
                 <Spacer direction="horizontal" size="16px" />
                 <Link color="neutral" href="/account">Account</Link>
             </Stack>
-            <FlexBox>
+            {/* <FlexBox> */}
                 {/* Account username */}
-                <p>{username}</p>
-            </FlexBox>
+                {/* <p>{username}</p> */}
+            {/* </FlexBox> */}
             <Link href="/login" sx={{ marginLeft: "auto", marginRight: "20px" }}><Button type='Primary' onDarkBackground onClick={handleSignOut}>Sign Out</Button></Link>
         </Stack>
     );

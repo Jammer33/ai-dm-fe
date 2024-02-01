@@ -1,11 +1,12 @@
 // AuthContext.tsx
 import Cookies from 'js-cookie';
-import React, { createContext, useState, useContext, ReactNode, useEffect } from 'react';
+import React, { ReactNode, createContext, useContext, useState } from 'react';
+// import { Link, useNavigate } from 'react-router-dom';
 
 interface AuthState {
     isAuthenticated: boolean;
     user: User | undefined; // Replace 'any' with your user object type
-    login: (user: any) => void; // Replace 'any' with your user object type
+    login: (user: User) => void; // Replace 'any' with your user object type
     logout: () => void;
   }
 
@@ -51,7 +52,8 @@ export const useAuth = (): AuthState => {
 export const useProtectedRoute = () => {
   const { isAuthenticated } = useAuth();
   if (!isAuthenticated) {
-    // Redirect to login page
-    // return <Navigate to="/login" />;
+    // navigate('/dashboard');
+    return null;
   }
+
 }

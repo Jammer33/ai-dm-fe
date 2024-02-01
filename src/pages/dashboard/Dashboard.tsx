@@ -1,19 +1,22 @@
 
-import React, { Fragment } from 'react';
+import React from 'react';
 
-import CampaignList from '../../components/campaignCard/CampaignList';
-import DashboardMainArea from './components/DashboardMainArea';
-import DashboardNavbar from '../../components/dashboardNavbar/DashboardNavbar';
-import Container from '../../components/container/Container';
 import { Sheet } from '@mui/joy';
+import CampaignList from '../../components/campaignCard/CampaignList';
+import Container from '../../components/container/Container';
+import DashboardNavbar from '../../components/dashboardNavbar/DashboardNavbar';
+import DashboardMainArea from './components/DashboardMainArea';
+import { useAuth } from '../../provider/AuthProvider';
 
 const Dashboard: React.FC = () => {
+    const {user} = useAuth();
+
   return (
     <Sheet>
         <DashboardNavbar />
         <Container>
             <DashboardMainArea 
-                username='Jammer33'
+                username={user?.username ?? "user"}
                 onNewCampaignClick={() => console.log('New Campaign Clicked')}
             />
             
