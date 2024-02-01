@@ -77,7 +77,7 @@ const SignupPage: React.FC = () => {
         try {
             const response = await postSignup({ email, password });
             if (!response.error) {
-                navigate('/dashboard');
+                navigate('/login');
             }
         } catch (error) {
             setEmailInUserError("This email is already in use");
