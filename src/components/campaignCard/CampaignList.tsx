@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import CampaignCard, { CampaignCardProps } from './CampaignCard';
 import FlexBox from '../flexBox/FlexBox';
 import { Colors } from '../../colors';
@@ -24,6 +24,10 @@ const CampaignList = ({ campaigns }: Props) => {
     const handleCreateCampaign = () => {
         navigate('/create-campaign');
     }
+
+    useEffect(() => {
+        setFilteredCampaigns(campaigns);
+    }, [campaigns]);
 
     return (
         <FlexBox justify="space-between" align="center" direction="column" style={{borderRadius: "10px"}}>
