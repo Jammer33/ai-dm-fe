@@ -28,6 +28,7 @@ const CampaignPage: React.FC<Props> = (props) => {
         name: 'Ariel',
         message: 'Wizard',
     }]);
+    const DM_COMPLETION_TOKEN = "[DONE]";
 
     useEffect(() => {
         console.log(document);
@@ -61,14 +62,28 @@ const CampaignPage: React.FC<Props> = (props) => {
         }
         }
 
+        let totalMessage = "";
         function onDMMessage(message: string) {
-            console.log(message);
-            setPlayerObj((playerObj) => [...playerObj, {name: 'DM', message: message}]);
-        setOutputText(outputText => outputText + message);
+            // console.log(message);
+            if(message == DM_COMPLETION_TOKEN) {
+                console.log("dm completion token recieved");
+                totalMessage = ""; // reset the total message when the entire message has been sent
+            } else {
+                if(totalMessage.length == 0) { // if the total message is empty, then this is the start of a new message
+                    setPlayerObj((playerObj) => [...playerObj, {name: 'DM', message: ""+message}]);
+                    setOutputText(outputText => outputText + message);
+                    totalMessage = message;
+                } else {
+                    totalMessage += message;
+                    setPlayerObj((playerObj) => [...playerObj.slice(0, playerObj.length-1), {name: 'DM', message: ""+totalMessage}]);
+                    setOutputText(outputText => outputText + message);
+                }
+            }
         }
 
         function onNewGame(sessionToken: string) { 
-        setSessionToken(sessionToken);
+            console.log(sessionToken);
+            setSessionToken(sessionToken);
         }
 
         function onJoinGame(previousMessagesStr: string) {
@@ -194,7 +209,7 @@ const CampaignPage: React.FC<Props> = (props) => {
                 right: "100px",
                 }}
             >
-                <Textarea
+            <Textarea
                 size="sm"
                 placeholder="Enter your next move"
                 value={inputText}
@@ -203,6 +218,8 @@ const CampaignPage: React.FC<Props> = (props) => {
                 maxRows={5}
                 />
                 <Button type='Primary' onDarkBackground onClick={handleSubmit}>send</Button>
+
+            <button className="submit" onClick={handleNewGame}>New Game</button>
             </div>
 
 
