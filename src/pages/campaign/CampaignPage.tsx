@@ -70,21 +70,21 @@ const CampaignPage: React.FC<Props> = (props) => {
         function onDMMessage(message: string) {
             // console.log(message);
             if(message == DM_COMPLETION_TOKEN) {
-                setPlayerObj((playerObj) => [...playerObj, {name: 'DM', message: ""+totalMessage}]);
-                setOutputText(outputText => outputText + message);
+                // setPlayerObj((playerObj) => [...playerObj, {name: 'DM', message: ""+totalMessage}]);
                 console.log("dm completion token recieved");
                 totalMessage = ""; // reset the total message when the entire message has been sent
+                console.log(playerObj);
             } else {
-                if(totalMessage.length == 0) { // if the total message is empty, then this is the start of a new message
-                    // setPlayerObj((playerObj) => [...playerObj, {name: 'DM', message: ""+message}]);
-                    // setOutputText(outputText => outputText + message);
+                if(totalMessage.length == 0 && message.length > 0) { // if the total message is empty, then this is the start of a new message
+                    setPlayerObj((playerObj) => [...playerObj, {name: 'DM', message: (' ' + message).slice(1)}]);
                     totalMessage = message;
-                } else {
+                    console.log("creating a new message");
+                } else if(message.length > 0) {
                     totalMessage += message;
-                    // console.log(totalMessage);
+                    console.log("combining " + totalMessage);
                     
-                    // setPlayerObj((playerObj) => [...playerObj.slice(0, playerObj.length-1), {name: 'DM', message: ""+totalMessage}]);
-                    // setOutputText(outputText => outputText + message);
+                    setPlayerObj((playerObj) => [...playerObj.slice(0, playerObj.length-1), {name: 'DM', message: (' ' + totalMessage).slice(1)}]);
+                    console.log(playerObj);
                 }
             }
             //console.log(playerObj);
