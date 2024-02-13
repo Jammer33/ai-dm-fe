@@ -25,10 +25,14 @@ const CampaignPage: React.FC<Props> = (props) => {
         level: 5,
     });
     const [playerMessage, setPlayerMessage] = useState('');
-    const [playerObj, setPlayerObj] = useState([{
+    type Player = {
+        name: string;
+        message: string;
+    }
+    const [playerObj, setPlayerObj] = useState<Player[]>([{
         name: 'Ariel',
         message: 'Wizard',
-    }]);
+    } as Player]);
     const DM_COMPLETION_TOKEN = "[DONE]";
 
     useEffect(() => {
@@ -66,29 +70,20 @@ const CampaignPage: React.FC<Props> = (props) => {
         }
         }
 
-        let totalMessage = "";
+        let done = true;
         function onDMMessage(message: string) {
-            // console.log(message);
             if(message == DM_COMPLETION_TOKEN) {
-                // setPlayerObj((playerObj) => [...playerObj, {name: 'DM', message: ""+totalMessage}]);
                 console.log("dm completion token recieved");
-                totalMessage = ""; // reset the total message when the entire message has been sent
-                console.log(playerObj);
+                done = true; 
             } else {
-                if(totalMessage.length == 0 && message.length > 0) { // if the total message is empty, then this is the start of a new message
-                    setPlayerObj((playerObj) => [...playerObj, {name: 'DM', message: (' ' + message).slice(1)}]);
-                    totalMessage = message;
-                    console.log("creating a new message");
-                } else if(message.length > 0) {
-                    totalMessage += message;
-                    console.log("combining " + totalMessage);
-                    
-                    setPlayerObj((playerObj) => [...playerObj.slice(0, playerObj.length-1), {name: 'DM', message: (' ' + totalMessage).slice(1)}]);
-                    console.log(playerObj);
+                if(done && message.length > 0) { // new message -> new card
+                    setPlayerObj((playerObj) => [...playerObj, {name: 'DM', message: "" + message} as Player]);
+                    done = false;
+                } else if(message.length > 0) { // append to existing message
+                    setPlayerObj((prevPlayerObj) => [...prevPlayerObj.slice(0, prevPlayerObj.length-1), 
+                            {name: 'DM', message: prevPlayerObj[prevPlayerObj.length-1].message + message} as Player]); 
                 }
             }
-            //console.log(playerObj);
-            
         }
 
         function onNewGame(sessionToken: string) { 
