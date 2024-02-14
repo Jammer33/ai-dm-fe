@@ -1,4 +1,4 @@
-import React, { useState, useEffect }  from 'react';
+import React, { useState, useEffect, useRef }  from 'react';
 import DashboardNavbar from '../../components/dashboardNavbar/DashboardNavbar';
 import MessageCard from './components/messageCard/MessageCard';
 import '../../components/dashboardNavbar/DashboardNavbar.css';
@@ -25,11 +25,27 @@ const CampaignPage: React.FC<Props> = (props) => {
         level: 5,
     });
     const [playerMessage, setPlayerMessage] = useState('');
-    const [playerObj, setPlayerObj] = useState([{
+    type Player = {
+        name: string;
+        message: string;
+    }
+    const [playerObj, setPlayerObj] = useState<Player[]>([{
         name: 'Ariel',
         message: 'Wizard',
-    }]);
+    } as Player]);
     const DM_COMPLETION_TOKEN = "[DONE]";
+
+    let session_token = '';
+
+    const messageStackRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        // Scroll to the bottom of the message stack when it updates
+        if (messageStackRef.current) {
+            messageStackRef.current.scrollTop = messageStackRef.current.scrollHeight;
+        }
+    }, [playerObj]);
+
 
     useEffect(() => {
         console.log(document);
@@ -66,34 +82,26 @@ const CampaignPage: React.FC<Props> = (props) => {
         }
         }
 
-        let totalMessage = "";
+        let done = true;
         function onDMMessage(message: string) {
-            // console.log(message);
             if(message == DM_COMPLETION_TOKEN) {
-                setPlayerObj((playerObj) => [...playerObj, {name: 'DM', message: ""+totalMessage}]);
-                setOutputText(outputText => outputText + message);
                 console.log("dm completion token recieved");
-                totalMessage = ""; // reset the total message when the entire message has been sent
+                done = true; 
             } else {
-                if(totalMessage.length == 0) { // if the total message is empty, then this is the start of a new message
-                    // setPlayerObj((playerObj) => [...playerObj, {name: 'DM', message: ""+message}]);
-                    // setOutputText(outputText => outputText + message);
-                    totalMessage = message;
-                } else {
-                    totalMessage += message;
-                    // console.log(totalMessage);
-                    
-                    // setPlayerObj((playerObj) => [...playerObj.slice(0, playerObj.length-1), {name: 'DM', message: ""+totalMessage}]);
-                    // setOutputText(outputText => outputText + message);
+                if(done && message.length > 0) { // new message -> new card
+                    setPlayerObj((playerObj) => [...playerObj, {name: 'DM', message: "" + message} as Player]);
+                    done = false;
+                } else if(message.length > 0) { // append to existing message
+                    setPlayerObj((prevPlayerObj) => [...prevPlayerObj.slice(0, prevPlayerObj.length-1), 
+                            {name: 'DM', message: prevPlayerObj[prevPlayerObj.length-1].message + message} as Player]); 
                 }
             }
-            //console.log(playerObj);
-            
         }
 
         function onNewGame(sessionToken: string) { 
             console.log(sessionToken);
             setSessionToken(sessionToken);
+            session_token = sessionToken;
         }
 
         function onJoinGame(previousMessagesStr: string) {
@@ -194,43 +202,34 @@ const CampaignPage: React.FC<Props> = (props) => {
     };
 
     return (
-        <Sheet sx={{ minHeight: "100VH" }}>
-    <DashboardNavbar />
-    <Stack sx={{ margin: "0 300px" }}>
-        <Spacer direction="vertical" size="16px" />
-        <MessageCard alignment='right' name='James' messageText='Hi! Excited to begin this campaign :D' />
-        <MessageCard alignment='left' name='Ariel' messageText='Yeah me too! Thanks so much for putting this website together. This should be a lot of fun' />
-        <MessageCard alignment='left' name='DM' messageText='test DM' />
-        {playerObj.map((messageObj, index) => (
-            <MessageCard key={index} alignment={messageObj.name === 'DM' ? 'left' : 'right'} name={messageObj.name} messageText={messageObj.message} />
-        ))}
-        <div
-            style={{
-                display: "flex",
-                justifyContent: "flex-end",
-                gap: "8px",
-                padding: "0 16px",
-                position: "fixed",
-                bottom: "16px",
-                left: "100px",
-                right: "100px",
-            }}
-        >
+
+        <Sheet sx={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
+        <DashboardNavbar sessionToken={sessionToken}/>
+        <Stack ref={messageStackRef} sx={{ flex: "1", display: "flex", flexDirection: "column", gap: "16px", padding: "16px", overflowY: "auto", marginTop: "40px" }}>
+            <Spacer direction="vertical" size="16px" />
+            <MessageCard alignment='right' name='James' messageText='Hi! Excited to begin this campaign :D' />
+            <MessageCard alignment='left' name='Ariel' messageText='Yeah me too! Thanks so much for putting this website together. This should be a lot of fun' />
+            <MessageCard alignment='left' name='DM' messageText='test DM' />
+            {playerObj.map((messageObj, index) => (
+                <MessageCard key={index} alignment={messageObj.name === 'DM' ? 'left' : 'right'} name={messageObj.name} messageText={messageObj.message} />
+            ))}
+        </Stack>
+        <div style={{ display: "flex", justifyContent: "flex-end", gap: "8px", padding: "0 16px", marginBottom: "16px"  }}>
             <Textarea
                 size="sm"
                 placeholder="Enter your next move"
                 value={inputText}
                 onChange={handleInputChange}
-                sx={{ flex: "1" }}
+                sx={{ flex: "1", position: "relative", zIndex: 1 }}
                 maxRows={5}
             />
-            <Button type='Primary' onDarkBackground onClick={handleSubmit}>send</Button>
-            <button className="submit" onClick={handleNewGame}>New Game</button>
-            <button className="submit" onClick={handleVoiceInput}>Voice Input</button>
+            <div style={{ display: "flex", gap: "8px" }}>
+                <Button type='Primary' onDarkBackground onClick={handleSubmit}>Send</Button>
+                <button className="submit" onClick={handleNewGame}>New Game</button>
+                <button className="submit" onClick={handleVoiceInput}>Voice Input</button>
+            </div>
         </div>
-    </Stack>
-</Sheet>
-
+    </Sheet>
     );
 };
 
