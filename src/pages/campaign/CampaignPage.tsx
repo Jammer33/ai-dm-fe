@@ -30,9 +30,13 @@ const CampaignPage: React.FC<Props> = (props) => {
         message: string;
     }
     const [playerObj, setPlayerObj] = useState<Player[]>([{
-        name: 'Ariel',
-        message: 'Wizard',
+        name: 'help-bot',
+        message: 'Welcome to the chatroom! Please click on the New Game button in the bottom left to initiate a game.',
     } as Player]);
+
+    
+   
+
     const DM_COMPLETION_TOKEN = "[DONE]";
 
     let session_token = '';
@@ -205,16 +209,18 @@ const CampaignPage: React.FC<Props> = (props) => {
 
         <Sheet sx={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
         <DashboardNavbar sessionToken={sessionToken}/>
-        <Stack ref={messageStackRef} sx={{ flex: "1", display: "flex", flexDirection: "column", gap: "16px", padding: "16px", overflowY: "auto", marginTop: "40px" }}>
+        <Stack ref={messageStackRef} sx={{ flex: "1", display: "flex", flexDirection: "column", gap: "16px", padding: "16px", overflowY: "auto", marginTop: "40px", marginBottom: "100px"}}>
             <Spacer direction="vertical" size="16px" />
-            <MessageCard alignment='right' name='James' messageText='Hi! Excited to begin this campaign :D' />
+            {/* <MessageCard alignment='right' name='James' messageText='Hi! Excited to begin this campaign :D' />
             <MessageCard alignment='left' name='Ariel' messageText='Yeah me too! Thanks so much for putting this website together. This should be a lot of fun' />
-            <MessageCard alignment='left' name='DM' messageText='test DM' />
+            <MessageCard alignment='left' name='DM' messageText='test DM' /> */}
             {playerObj.map((messageObj, index) => (
                 <MessageCard key={index} alignment={messageObj.name === 'DM' ? 'left' : 'right'} name={messageObj.name} messageText={messageObj.message} />
             ))}
         </Stack>
-        <div style={{ display: "flex", justifyContent: "flex-end", gap: "8px", padding: "0 16px", marginBottom: "16px"  }}>
+        {/* <div style={{ display: "flex", justifyContent: "flex-end", gap: "8px", padding: "0 16px", marginBottom: "16px"  }}> */}
+        <div style={{ position: "fixed", bottom: 0, left: 0, right: 0, display: "flex", justifyContent: "flex-end", gap: "8px", padding: "0 16px", marginBottom: "16px", backgroundColor: "black", boxShadow: "0px -1px 5px rgba(0, 0, 0, 0.1)" }}>
+            <button className="submit" onClick={handleNewGame}>New Game</button>
             <Textarea
                 size="sm"
                 placeholder="Enter your next move"
@@ -225,7 +231,7 @@ const CampaignPage: React.FC<Props> = (props) => {
             />
             <div style={{ display: "flex", gap: "8px" }}>
                 <Button type='Primary' onDarkBackground onClick={handleSubmit}>Send</Button>
-                <button className="submit" onClick={handleNewGame}>New Game</button>
+                {/* <button className="submit" onClick={handleNewGame}>New Game</button> */}
                 <button className="submit" onClick={handleVoiceInput}>Voice Input</button>
             </div>
         </div>
