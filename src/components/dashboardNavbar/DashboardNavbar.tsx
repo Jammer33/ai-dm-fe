@@ -11,7 +11,7 @@ import { Sheet, Stack, Typography, Link, Textarea } from '@mui/joy';
 interface DashboardNavbarProps {
     // Any additional props for Navbar can be defined here
     sessionToken?: string; // Define sessionToken prop
-    handleJoinGame?: () => void;
+    handleJoinGame?: (token: string) => void;
     handleNewGame?: () => void;
 }
 
@@ -87,14 +87,15 @@ const DashboardNavbar: React.FC<DashboardNavbarProps> = ({ sessionToken, handleJ
                     </Link>
                 )}
                 <Spacer direction="horizontal" size="16px" />
-                {/* <Textarea
+                <Textarea
                     size="sm"
-                    placeholder="Enter join token"
+                    placeholder="Enter join token here"
                     value={joinToken}
                     onChange={(e) => setJoinToken(e.target.value)}
-                /> */}
+                />
                 <Spacer direction="horizontal" size="8px" />
-                <Button type="Primary" onClick={handleJoinGame}>Join Game</Button>
+                {/* <Button type="Primary" onClick={handleJoinGame}>Join Game</Button> */}
+                <Button type="Primary" onClick={() => handleJoinGame && handleJoinGame(joinToken)}>Join Game</Button>
                 <Spacer direction="horizontal" size="8px" /> 
                 <button className="submit" onClick={handleNewGame} style={{ fontSize: "16px" }}>New Game</button>
             </Stack>

@@ -31,7 +31,7 @@ const CampaignPage: React.FC<Props> = (props) => {
     }
     const [playerObj, setPlayerObj] = useState<Player[]>([{
         name: 'help-bot',
-        message: 'Welcome to the chatroom! Please click on the New Game button in the bottom left to initiate a game.',
+        message: 'Welcome to the chatroom! Please click on the New Game button in the Navbar above 👆 to initiate a game. 😄',
     } as Player]);
 
     
@@ -180,9 +180,16 @@ const CampaignPage: React.FC<Props> = (props) => {
         setOutputText('');
     };
 
-    const handleJoinGame = () => {
+    // const handleJoinGame = () => {
+    //     // console.log('Joining game with token:', joinToken);
+    //     socket.emit('joinGame', sessionToken);
+
+    // };
+
+    const handleJoinGame = (token: string) => {
         // console.log('Joining game with token:', joinToken);
-        socket.emit('joinGame', sessionToken);
+        setSessionToken(token);
+        socket.emit('joinGame', token);
 
     };
 
@@ -238,7 +245,7 @@ const CampaignPage: React.FC<Props> = (props) => {
                 {/* <button className="submit" onClick={handleNewGame}>New Game</button> */}
                 <Button type='Secondary' onDarkBackground onClick={handleVoiceInput}>Voice Input</Button>
                 {/* <button className="submit" onClick={handleVoiceInput}>Voice Input</button> */}
-                <input
+                {/* <input
                     type='text'
                     value={sessionToken}
                     onChange={handleSessionTokenChange}
@@ -254,7 +261,7 @@ const CampaignPage: React.FC<Props> = (props) => {
                         transition: "background-color 0.3s ease",
                         fontSize: "18px", 
                     }}
-                ></input>
+                ></input> */}
                 {/* <button className="submit" onClick={handleJoinGame}>Join Game</button> */}
 
             </div>
