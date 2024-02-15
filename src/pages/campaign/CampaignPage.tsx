@@ -236,12 +236,24 @@ const CampaignPage: React.FC<Props> = (props) => {
             <div style={{ display: "flex", gap: "8px" }}>
                 <Button type='Primary' onDarkBackground onClick={handleSubmit}>Send</Button>
                 {/* <button className="submit" onClick={handleNewGame}>New Game</button> */}
-                <button className="submit" onClick={handleVoiceInput}>Voice Input</button>
+                <Button type='Secondary' onDarkBackground onClick={handleVoiceInput}>Voice Input</Button>
+                {/* <button className="submit" onClick={handleVoiceInput}>Voice Input</button> */}
                 <input
                     type='text'
                     value={sessionToken}
                     onChange={handleSessionTokenChange}
-                    placeholder="Enter your session token here"
+                    placeholder="Enter session token here"
+                    style={{
+                        backgroundColor: "#333",
+                        color: "#fff",
+                        border: "1px solid #555",
+                        padding: "10px",
+                        borderRadius: "5px",
+                        boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+                        outline: "none",
+                        transition: "background-color 0.3s ease",
+                        fontSize: "18px", 
+                    }}
                 ></input>
                 {/* <button className="submit" onClick={handleJoinGame}>Join Game</button> */}
 
