@@ -65,8 +65,9 @@ const CampaignPage: React.FC<Props> = (props) => {
         }
 
         function onReply(message: string) {
+            console.log(message);
         let formattedObj = new Map<String, String>(JSON.parse(message));
-
+        
         console.log(formattedObj);
         let player = "";
         
@@ -109,6 +110,7 @@ const CampaignPage: React.FC<Props> = (props) => {
         }
 
         function onJoinGame(previousMessagesStr: string) {
+            console.log("Join game triggered!!!");
         var previousMessages = new Map<String, String>(JSON.parse(previousMessagesStr));
         
         if(previousMessages.has("DM")) {
@@ -179,7 +181,9 @@ const CampaignPage: React.FC<Props> = (props) => {
     };
 
     const handleJoinGame = () => {
+        // console.log('Joining game with token:', joinToken);
         socket.emit('joinGame', sessionToken);
+
     };
 
     const handleVoiceInput = () => {
@@ -208,7 +212,7 @@ const CampaignPage: React.FC<Props> = (props) => {
     return (
 
         <Sheet sx={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
-        <DashboardNavbar sessionToken={sessionToken}/>
+        <DashboardNavbar sessionToken={sessionToken} handleJoinGame={handleJoinGame} handleNewGame={handleNewGame}/>
         <Stack ref={messageStackRef} sx={{ flex: "1", display: "flex", flexDirection: "column", gap: "16px", padding: "16px", overflowY: "auto", marginTop: "40px", marginBottom: "100px"}}>
             <Spacer direction="vertical" size="16px" />
             {/* <MessageCard alignment='right' name='James' messageText='Hi! Excited to begin this campaign :D' />
@@ -220,7 +224,7 @@ const CampaignPage: React.FC<Props> = (props) => {
         </Stack>
         {/* <div style={{ display: "flex", justifyContent: "flex-end", gap: "8px", padding: "0 16px", marginBottom: "16px"  }}> */}
         <div style={{ position: "fixed", bottom: 0, left: 0, right: 0, display: "flex", justifyContent: "flex-end", gap: "8px", padding: "0 16px", marginBottom: "16px", backgroundColor: "black", boxShadow: "0px -1px 5px rgba(0, 0, 0, 0.1)" }}>
-            <button className="submit" onClick={handleNewGame}>New Game</button>
+            {/* <button className="submit" onClick={handleNewGame}>New Game</button> */}
             <Textarea
                 size="sm"
                 placeholder="Enter your next move"
@@ -233,6 +237,14 @@ const CampaignPage: React.FC<Props> = (props) => {
                 <Button type='Primary' onDarkBackground onClick={handleSubmit}>Send</Button>
                 {/* <button className="submit" onClick={handleNewGame}>New Game</button> */}
                 <button className="submit" onClick={handleVoiceInput}>Voice Input</button>
+                <input
+                    type='text'
+                    value={sessionToken}
+                    onChange={handleSessionTokenChange}
+                    placeholder="Enter your session token here"
+                ></input>
+                {/* <button className="submit" onClick={handleJoinGame}>Join Game</button> */}
+
             </div>
         </div>
     </Sheet>

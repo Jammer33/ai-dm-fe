@@ -28,6 +28,7 @@ const PlayerPage = () => {
     }
 
     function onReply(message: string) {
+      console.log(message);
       let formattedObj = new Map<String, String>(JSON.parse(message));
 
       if(formattedObj.has("player")) {

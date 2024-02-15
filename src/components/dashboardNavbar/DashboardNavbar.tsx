@@ -11,6 +11,8 @@ import { Sheet, Stack, Typography, Link, Textarea } from '@mui/joy';
 interface DashboardNavbarProps {
     // Any additional props for Navbar can be defined here
     sessionToken?: string; // Define sessionToken prop
+    handleJoinGame?: () => void;
+    handleNewGame?: () => void;
 }
 
 const handleSignOut = async () => {
@@ -42,11 +44,21 @@ const handleCopyToClipboard = (text: string, setCopied: React.Dispatch<React.Set
         });
 }
 
-const DashboardNavbar: React.FC<DashboardNavbarProps> = ({ sessionToken }) => {
+const DashboardNavbar: React.FC<DashboardNavbarProps> = ({ sessionToken, handleJoinGame, handleNewGame }) => {
     const username = useAuth().user?.username;
     const [copied, setCopied] = useState<boolean>(false); // State for visual notification
 
-    const [joinToken, setJoinToken] = useState<string>(''); // State for join token
+    // const [joinToken, setJoinToken] = useState<string>(''); // State for join token
+    const [joinToken, setJoinToken] = useState('');
+
+    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setJoinToken(event.target.value);
+    };
+
+    // const handleJoin = () => {
+    //     handleJoinGame(joinToken); // Call handleJoinGame with the joinToken
+    //     setJoinToken(''); // Clear the joinToken after joining
+    // };
 
     const handleJoinButtonClick = () => {
         // if (onJoinGame && joinToken.trim() !== '') {
@@ -75,14 +87,16 @@ const DashboardNavbar: React.FC<DashboardNavbarProps> = ({ sessionToken }) => {
                     </Link>
                 )}
                 <Spacer direction="horizontal" size="16px" />
-                <Textarea
+                {/* <Textarea
                     size="sm"
                     placeholder="Enter join token"
                     value={joinToken}
                     onChange={(e) => setJoinToken(e.target.value)}
-                />
+                /> */}
                 <Spacer direction="horizontal" size="8px" />
-                <Button type="Primary" onClick={handleJoinButtonClick}>Join Game</Button>
+                <Button type="Primary" onClick={handleJoinGame}>Join Game</Button>
+                <Spacer direction="horizontal" size="8px" /> 
+                <button className="submit" onClick={handleNewGame}>New Game</button>
             </Stack>
             <FlexBox>
                 {/* Account username */}
@@ -96,3 +110,5 @@ const DashboardNavbar: React.FC<DashboardNavbarProps> = ({ sessionToken }) => {
 }
 
 export default DashboardNavbar;
+
+
