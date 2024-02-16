@@ -9,6 +9,7 @@ interface MessageCardProps {
   avatarSrc?: string;
   name: string;
   messageText: string;
+  handleTTSRequest: (message: string) => void;
 }
 
 const MessageCard: React.FC<MessageCardProps> = ({
@@ -16,6 +17,7 @@ const MessageCard: React.FC<MessageCardProps> = ({
   avatarSrc,
   name,
   messageText,
+  handleTTSRequest,
 }) => {
   const [isSpeaking, setIsSpeaking] = useState(false);
 
@@ -95,7 +97,7 @@ const MessageCard: React.FC<MessageCardProps> = ({
               <Spacer direction="vertical" size="5px" />
               <Typography level="body-sm">{messageText}</Typography>
             </Stack>
-            <IconButton aria-label={isSpeaking ? "Stop speaking" : "Speak message"} onClick={speakMessage}>
+            <IconButton aria-label={isSpeaking ? "Stop speaking" : "Speak message"} onClick={() => handleTTSRequest(messageText)}>
               {isSpeaking ? <StopIcon /> : <VolumeUpIcon />}
             </IconButton>
           </Stack>

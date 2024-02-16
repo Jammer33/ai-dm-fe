@@ -6,9 +6,6 @@ import { Input, Sheet, Stack, Textarea } from '@mui/joy';
 import Button from '../../components/button/Button';
 import Spacer from '../../components/spacer/Spacer';
 import { socket } from '../../socket';
-import { log } from 'console';
-
-
 interface Props {
     // Define props here
 }
@@ -125,8 +122,21 @@ const CampaignPage: React.FC<Props> = (props) => {
         }
 
         function onConnectErr(err: any) {
-        console.log(`connect_error due to ${err.message}`); 
+            console.log(`connect_error due to ${err.message}`); 
         }
+
+        function onTTS(data: any) {
+            const audioContext = new window.AudioContext();
+            const source = audioContext.createBufferSource();
+            audioContext.decodeAudioData(data, (buffer) => {
+                source.buffer = buffer;
+                source.connect(audioContext.destination);
+                source.start();
+            });
+
+        }
+        
+
 
         socket.on('connect', onConnect);
         socket.on('disconnect', onDisconnect);
@@ -135,9 +145,10 @@ const CampaignPage: React.FC<Props> = (props) => {
         socket.on('newGame', onNewGame);
         socket.on('joinGame', onJoinGame);
         socket.on('connect_error', onConnectErr);
+        socket.on('tts', onTTS);
 
         return () => {
-        socket.close();
+            socket.close();
         };
     }, []);
 
@@ -156,6 +167,11 @@ const CampaignPage: React.FC<Props> = (props) => {
         socket.emit('reply', inputText, sessionToken);
         setInputText('');
     };
+
+    const handleTTSRequest = (text: string) => {
+        // use websockets to send inputText to server
+        socket.emit('tts', text, sessionToken);
+    }
 
     const handleNewGame = () => {
         // use websockets to send inputText to server
@@ -226,7 +242,7 @@ const CampaignPage: React.FC<Props> = (props) => {
             <MessageCard alignment='left' name='Ariel' messageText='Yeah me too! Thanks so much for putting this website together. This should be a lot of fun' />
             <MessageCard alignment='left' name='DM' messageText='test DM' /> */}
             {playerObj.map((messageObj, index) => (
-                <MessageCard key={index} alignment={messageObj.name === 'DM' ? 'left' : 'right'} name={messageObj.name} messageText={messageObj.message} />
+                <MessageCard handleTTSRequest={handleTTSRequest} key={index} alignment={messageObj.name === 'DM' ? 'left' : 'right'} name={messageObj.name} messageText={messageObj.message} />
             ))}
         </Stack>
         {/* <div style={{ display: "flex", justifyContent: "flex-end", gap: "8px", padding: "0 16px", marginBottom: "16px"  }}> */}
