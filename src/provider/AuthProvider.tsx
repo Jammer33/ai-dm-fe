@@ -5,7 +5,7 @@ import React, { createContext, useState, useContext, ReactNode, useEffect } from
 interface AuthState {
     isAuthenticated: boolean;
     user: User | undefined; // Replace 'any' with your user object type
-    login: (user: any) => void; // Replace 'any' with your user object type
+    login: (user: User) => void; // Replace 'any' with your user object type
     logout: () => void;
   }
 

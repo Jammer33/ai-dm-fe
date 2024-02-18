@@ -8,9 +8,11 @@ import Container from '../../components/container/Container';
 import { Sheet } from '@mui/joy';
 import { getRooms } from '../../api/GetRooms';
 import { CampaignCardProps } from '../../components/campaignCard/CampaignCard';
+import { useAuth } from '../../provider/AuthProvider';
 
 const Dashboard: React.FC = () => {
     const [campaigns, setCampaigns] = useState(new Array<CampaignCardProps>());
+    const {user} = useAuth();
 
     const getCampaignRooms = async () => {
         try {
@@ -55,7 +57,7 @@ const Dashboard: React.FC = () => {
             <DashboardNavbar />
             <Container>
                 <DashboardMainArea 
-                    username='Jammer33'
+                    username={user?.username ?? "user"}
                     onNewCampaignClick={() => console.log('New Campaign Clicked')}
                 />
                 <CampaignList
