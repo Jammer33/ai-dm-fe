@@ -1,7 +1,7 @@
 // AuthContext.tsx
 import Cookies from 'js-cookie';
-import React, { createContext, useState, useContext, ReactNode, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { ReactNode, createContext, useContext, useEffect, useState } from 'react';
+import { getVerify } from '../api/GetVerify';
 
 interface AuthState {
     isAuthenticated: boolean;
@@ -20,11 +20,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User>(); // Replace 'any' with your user object type
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
 
-  const login = (user: User) => {
-    setUser(user);
-    setIsAuthenticated(true);
-  };
-
   const logout = () => {
     setUser(undefined);
     setIsAuthenticated(false);
@@ -32,7 +27,34 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     Cookies.remove('token');
   };
 
-  // Optional: Add useEffect to check initial authentication state, e.g., check if token exists in storage (make a request to the server and see if comes back authed?)
+  const checkUserToken = async () => {
+    const userToken = Cookies.get('token');
+    if (!userToken || userToken === 'undefined') {
+      setIsAuthenticated(false);
+    }
+    setIsAuthenticated(true);
+    
+    try {
+      const response = await getVerify();
+
+      if (response.email) {
+        const {email} = response;
+        const username = email.split("@")[0];
+        setUser({username, email});
+      }
+    } catch (error) {
+        console.log("Invalid token");
+    }
+  }
+  
+  useEffect(() => {
+    checkUserToken();
+  }, []);
+
+  const login = (user: User) => {
+    setUser(user);
+    setIsAuthenticated(true);
+  };
 
   return (
     <AuthContext.Provider value={{ isAuthenticated, user, login, logout }}>
@@ -49,10 +71,10 @@ export const useAuth = (): AuthState => {
   return context;
 };
 
-export const useProtectedRoute = () => {
-  const navigate = useNavigate();
-  const { isAuthenticated } = useAuth();
-  if (!isAuthenticated) {
-    navigate('/login');
-  }
-}
+// export const useProtectedRoute = () => {
+//   const navigate = useNavigate();
+//   const { isAuthenticated } = useAuth();
+//   if (!isAuthenticated) {
+//     navigate('/login');
+//   }
+// }
