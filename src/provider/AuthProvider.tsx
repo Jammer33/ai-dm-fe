@@ -1,6 +1,7 @@
 // AuthContext.tsx
 import Cookies from 'js-cookie';
 import React, { createContext, useState, useContext, ReactNode, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 interface AuthState {
     isAuthenticated: boolean;
@@ -49,9 +50,9 @@ export const useAuth = (): AuthState => {
 };
 
 export const useProtectedRoute = () => {
+  const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
   if (!isAuthenticated) {
-    // Redirect to login page
-    // return <Navigate to="/login" />;
+    navigate('/login');
   }
 }
