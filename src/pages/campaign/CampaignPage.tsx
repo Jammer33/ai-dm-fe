@@ -54,34 +54,34 @@ const CampaignPage: React.FC<Props> = (props) => {
         console.log('socket:', socket);
         
         function onConnect() {
-        console.log('Connected to server');
+            console.log('Connected to server');
         }
 
         function onDisconnect() {
-        console.log('Disconnected from server');
+            console.log('Disconnected from server');
         }
 
         function onReply(message: string) {
             console.log(message);
-        let formattedObj = new Map<String, String>(JSON.parse(message));
-        
-        console.log(formattedObj);
-        let player = "";
-        
-        if(formattedObj.has("player")) {
-            let player1 = formattedObj.get("player") ?? "";
-            player = String(player1);
-            setOutputText(outputText => outputText + "\n" + player + "\n");
-        }
-        
-        if(formattedObj.has("message")) {
-            let playerMessage = formattedObj.get("message") ?? "";
-            // console.log("Player message ---> " + playerMessage);
+            let formattedObj = new Map<String, String>(JSON.parse(message));
+            
+            console.log(formattedObj);
+            let player = "";
+            
+            if(formattedObj.has("player")) {
+                let player1 = formattedObj.get("player") ?? "";
+                player = String(player1);
+                setOutputText(outputText => outputText + "\n" + player + "\n");
+            }
+            
+            if(formattedObj.has("message")) {
+                let playerMessage = formattedObj.get("message") ?? "";
+                // console.log("Player message ---> " + playerMessage);
 
-            setPlayerObj((playerObj) => [...playerObj, {name: player, message: String(playerMessage)}]); 
-            console.log(playerObj);
-            setOutputText(outputText => outputText + "\n" + playerMessage + "\n");
-        }
+                setPlayerObj((playerObj) => [...playerObj, {name: player, message: String(playerMessage)}]); 
+                console.log(playerObj);
+                setOutputText(outputText => outputText + "\n" + playerMessage + "\n");
+            }
         }
 
         let done = true;
@@ -108,17 +108,17 @@ const CampaignPage: React.FC<Props> = (props) => {
 
         function onJoinGame(previousMessagesStr: string) {
             console.log("Join game triggered!!!");
-        var previousMessages = new Map<String, String>(JSON.parse(previousMessagesStr));
-        
-        if(previousMessages.has("DM")) {
-            let message : String = previousMessages.get("DM") ?? "";
-            setOutputText(outputText => outputText + "\n" + message + "\n");
-            previousMessages.delete("DM");
-        }
+            var previousMessages = new Map<String, String>(JSON.parse(previousMessagesStr));
+            
+            if(previousMessages.has("DM")) {
+                let message : String = previousMessages.get("DM") ?? "";
+                setOutputText(outputText => outputText + "\n" + message + "\n");
+                previousMessages.delete("DM");
+            }
 
-        previousMessages.forEach((message, player) => {
-            setOutputText(outputText => outputText + "\n" + player + ": " + message + "\n");
-        });
+            previousMessages.forEach((message, player) => {
+                setOutputText(outputText => outputText + "\n" + player + ": " + message + "\n");
+            });
         }
 
         function onConnectErr(err: any) {
@@ -135,8 +135,6 @@ const CampaignPage: React.FC<Props> = (props) => {
             });
 
         }
-        
-
 
         socket.on('connect', onConnect);
         socket.on('disconnect', onDisconnect);
