@@ -109,15 +109,9 @@ const CampaignPage: React.FC<Props> = (props) => {
         function onJoinGame(previousMessagesStr: string) {
             console.log("Join game triggered!!!");
             var previousMessages = new Map<String, String>(JSON.parse(previousMessagesStr));
-            
-            if(previousMessages.has("DM")) {
-                let message : String = previousMessages.get("DM") ?? "";
-                setOutputText(outputText => outputText + "\n" + message + "\n");
-                previousMessages.delete("DM");
-            }
-
             previousMessages.forEach((message, player) => {
-                setOutputText(outputText => outputText + "\n" + player + ": " + message + "\n");
+                setPlayerObj((playerObj) => [...playerObj, {name: player, message: String(message)} as Player]); 
+                // setOutputText(outputText => outputText + "\n" + player + ": " + message + "\n");
             });
         }
 
