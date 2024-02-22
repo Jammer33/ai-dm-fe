@@ -6,6 +6,9 @@ import { Input, Sheet, Stack, Textarea } from '@mui/joy';
 import Button from '../../components/button/Button';
 import Spacer from '../../components/spacer/Spacer';
 import { socket } from '../../socket';
+import queryString from 'query-string';
+import { useLocation } from 'react-router-dom';
+
 interface Props {
     // Define props here
 }
@@ -31,14 +34,11 @@ const CampaignPage: React.FC<Props> = (props) => {
         message: 'Welcome to the chatroom! Please click on the New Game button in the Navbar above 👆 to initiate a game. 😄',
     } as Player]);
 
-    
-   
-
     const DM_COMPLETION_TOKEN = "[DONE]";
+    const parsed = queryString.parse(useLocation().search);
+    const messageStackRef = useRef<HTMLDivElement>(null);
 
     let session_token = '';
-
-    const messageStackRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         // Scroll to the bottom of the message stack when it updates
@@ -47,11 +47,19 @@ const CampaignPage: React.FC<Props> = (props) => {
         }
     }, [playerObj]);
 
-
     useEffect(() => {
         console.log(document);
         console.log('CampaignPage mounted');
         console.log('socket:', socket);
+
+        const paramsStr = queryString.stringify(parsed);
+        if(paramsStr.length != 0) { // query params indicate that we want to join a room
+            let name : string = (parsed["name"] ?? "") as string, description : string = (parsed["description"] ?? "") as string;
+            console.log(name);
+            if (name.length > 0) {
+                createNewGame(name, description);
+            }
+        }
         
         function onConnect() {
             console.log('Connected to server');
@@ -167,26 +175,30 @@ const CampaignPage: React.FC<Props> = (props) => {
 
     const handleNewGame = () => {
         // use websockets to send inputText to server
-        const character1 = {
-        name: 'Ariel',
-        race: 'Elf',
-        class: 'Wizard',
-        };
-        const character2 = {
-        name: 'James',
-        race: 'Human',
-        class: 'Fighter',
-        };
-        const character3 = {
-        name: 'Connor',
-        race: 'Dwarf',
-        class: 'Cleric',
-        };
-
-        socket.emit('newGame', [character2]);
+        createNewGame();
         setInputText('');
         setOutputText('');
     };
+
+    function createNewGame(name : string = "", description : string = "") {
+        const character1 = {
+            name: 'Ariel',
+            race: 'Elf',
+            class: 'Wizard',
+        };
+        const character2 = {
+            name: 'James',
+            race: 'Human',
+            class: 'Fighter',
+        };
+        const character3 = {
+            name: 'Connor',
+            race: 'Dwarf',
+            class: 'Cleric',
+        };
+    
+        socket.emit('newGame', [character2, name, description]);
+    }
 
     // const handleJoinGame = () => {
     //     // console.log('Joining game with token:', joinToken);
