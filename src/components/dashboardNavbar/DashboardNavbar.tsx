@@ -7,6 +7,7 @@ import Spacer from '../spacer/Spacer';
 import FlexBox from '../flexBox/FlexBox';
 import { useAuth } from '../../provider/AuthProvider';
 import { Sheet, Stack, Typography, Link, Textarea } from '@mui/joy';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 interface DashboardNavbarProps {
     // Any additional props for Navbar can be defined here
@@ -55,10 +56,14 @@ const DashboardNavbar: React.FC<DashboardNavbarProps> = ({ sessionToken, handleJ
         setJoinToken(event.target.value);
     };
 
-    // const handleJoin = () => {
-    //     handleJoinGame(joinToken); // Call handleJoinGame with the joinToken
-    //     setJoinToken(''); // Clear the joinToken after joining
-    // };
+    const navigate = useNavigate();
+    const onJoinGame = async (token: string) => {
+        if (handleJoinGame) {
+            handleJoinGame(token);
+            return;
+        }
+        return navigate(`/campaign?sessionToken=${token}`);
+    }
 
     const handleJoinButtonClick = () => {
         // if (onJoinGame && joinToken.trim() !== '') {
@@ -95,7 +100,7 @@ const DashboardNavbar: React.FC<DashboardNavbarProps> = ({ sessionToken, handleJ
                 />
                 <Spacer direction="horizontal" size="8px" />
                 {/* <Button type="Primary" onClick={handleJoinGame}>Join Game</Button> */}
-                <Button type="Primary" onClick={() => handleJoinGame && handleJoinGame(joinToken)}>Join Game</Button>
+                <Button type="Primary" onClick={() => onJoinGame(joinToken)}>Join Game</Button>
                 <Spacer direction="horizontal" size="8px" /> 
                 <button className="submit" onClick={handleNewGame} style={{ fontSize: "16px" }}>New Game</button>
             </Stack>
