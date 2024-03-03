@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef }  from 'react';
 import DashboardNavbar from '../../components/dashboardNavbar/DashboardNavbar';
 import MessageCard from './components/messageCard/MessageCard';
 import '../../components/dashboardNavbar/DashboardNavbar.css';
-import { Input, Sheet, Stack, Textarea } from '@mui/joy';
+import { Box, FormControl, FormLabel, Input, Sheet, Stack, Textarea } from '@mui/joy';
 import Button from '../../components/button/Button';
 import Spacer from '../../components/spacer/Spacer';
 import { socket } from '../../socket';
@@ -15,6 +15,7 @@ interface Props {
 
 const CampaignPage: React.FC<Props> = (props) => {
     // Define component logic here
+    const [playbackSpeed, setPlaybackSpeed] = useState(1);
     const [inputText, setInputText] = useState('');
     const [outputText, setOutputText] = useState('');
     const [sessionToken, setSessionToken] = useState('');
@@ -140,7 +141,6 @@ const CampaignPage: React.FC<Props> = (props) => {
                 source.connect(audioContext.destination);
                 source.start();
             });
-
         }
 
         socket.on('connect', onConnect);
@@ -175,7 +175,7 @@ const CampaignPage: React.FC<Props> = (props) => {
 
     const handleTTSRequest = (text: string) => {
         // use websockets to send inputText to server
-        socket.emit('tts', text, sessionToken);
+        socket.emit('tts', text, sessionToken, playbackSpeed ?? 1);
     }
 
     const handleNewGame = () => {
@@ -255,7 +255,7 @@ const CampaignPage: React.FC<Props> = (props) => {
             ))}
         </Stack>
         {/* <div style={{ display: "flex", justifyContent: "flex-end", gap: "8px", padding: "0 16px", marginBottom: "16px"  }}> */}
-        <div style={{ position: "fixed", bottom: 0, left: 0, right: 0, display: "flex", justifyContent: "flex-end", gap: "8px", padding: "0 16px", marginBottom: "16px", backgroundColor: "black", boxShadow: "0px -1px 5px rgba(0, 0, 0, 0.1)" }}>
+        <Box sx={{ position: "fixed", bottom: 0, left: 0, right: 0, display: "flex", justifyContent: "flex-end", gap: "8px", padding: "0 16px", marginBottom: "16px", boxShadow: "0px -1px 5px rgba(0, 0, 0, 0.1)" }}>
             {/* <button className="submit" onClick={handleNewGame}>New Game</button> */}
             <Textarea
                 size="sm"
@@ -290,7 +290,13 @@ const CampaignPage: React.FC<Props> = (props) => {
                 {/* <button className="submit" onClick={handleJoinGame}>Join Game</button> */}
 
             </div>
-        </div>
+            <FormControl>
+                <FormLabel>Speech Speed</FormLabel>
+                <Input placeholder="1x" onChange={(e) => {
+                    setPlaybackSpeed(parseFloat(e.target.value))
+                }} />
+            </FormControl>
+        </Box>
     </Sheet>
     );
 };
