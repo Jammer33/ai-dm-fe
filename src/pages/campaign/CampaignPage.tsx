@@ -55,9 +55,14 @@ const CampaignPage: React.FC<Props> = (props) => {
         const paramsStr = queryString.stringify(parsed);
         if(paramsStr.length != 0) { // query params indicate that we want to join a room
             let name : string = (parsed["name"] ?? "") as string, description : string = (parsed["description"] ?? "") as string;
+            let sessionToken : string = (parsed["sessionToken"] ?? "") as string;
+
             console.log(name);
             if (name.length > 0) {
                 createNewGame(name, description);
+            }
+            if(sessionToken.length > 0) {
+                handleJoinGame(sessionToken);
             }
         }
         
