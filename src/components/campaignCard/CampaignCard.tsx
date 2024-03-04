@@ -30,14 +30,14 @@ const CampaignCard = ({ token, title, description, imageUrl, nextSession, status
     return (
             <Card size="md" variant="outlined" sx={{
                 width: "220px",
-                height: "350px",
+                height: "125px",
                 margin: "16px",
             }}>
-                <CardOverflow >
+                {/* <CardOverflow >
                 <AspectRatio ratio="1.7">
                     <img src={imageUrl} alt={`${title} thumbnail`} className="campaign-card__image" />
                 </AspectRatio>
-                </CardOverflow>
+                </CardOverflow> */}
                 <CardContent>
                     <Stack spacing={1}>
                         <Typography level="title-md">{title}</Typography>
