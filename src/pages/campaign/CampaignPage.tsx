@@ -202,7 +202,7 @@ const CampaignPage: React.FC<Props> = (props) => {
             class: 'Cleric',
         };
     
-        socket.emit('newGame', [character2, name, description]);
+        socket.emit('newGame', [character2], name, description);
     }
 
     // const handleJoinGame = () => {
