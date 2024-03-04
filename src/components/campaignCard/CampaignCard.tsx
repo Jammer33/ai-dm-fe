@@ -3,6 +3,7 @@ import './CampaignCard.css';
 import { AspectRatio, Button, ButtonGroup, Card, CardContent, CardOverflow, Stack, Typography } from '@mui/joy';
 import { Spa } from '@mui/icons-material';
 import Spacer from '../spacer/Spacer';
+import { useNavigate } from 'react-router-dom';
 
 export interface CampaignCardProps {
   token: string;
@@ -11,9 +12,10 @@ export interface CampaignCardProps {
   imageUrl: string;
   nextSession: Date;
   status: 'active' | 'inactive';
+  sessionToken: string;
 }
 
-const CampaignCard = ({ token, title, description, imageUrl, nextSession, status}: CampaignCardProps) => {
+const CampaignCard = ({ token, title, description, imageUrl, nextSession, status, sessionToken }: CampaignCardProps) => {
 
     const onDelete = () => {
         console.log('Delete');
@@ -23,8 +25,9 @@ const CampaignCard = ({ token, title, description, imageUrl, nextSession, status
         console.log('Edit');
     };
 
+    const navigate = useNavigate();
     const onPlay = () => {
-        console.log('Play');
+        navigate(`/campaign?sessionToken=${sessionToken}`);
     };
 
     return (
@@ -46,13 +49,13 @@ const CampaignCard = ({ token, title, description, imageUrl, nextSession, status
                 </CardContent>
                 {/* Buttons */}
                 <Stack direction="row" justifyContent={"space-between"}>
-                    <Button size="sm" color="danger" variant="plain" onClick={onDelete} sx={{fontWeight: 500, fontSize: "12px"}}>
+                    {/* <Button size="sm" color="danger" variant="plain" onClick={onDelete} sx={{fontWeight: 500, fontSize: "12px"}}>
                         Delete
-                    </Button>
+                    </Button> */}
                     <ButtonGroup >
-                        <Button size="md" onClick={onView} sx={{fontWeight: 500, fontSize: "12px"}}>
+                        {/* <Button size="md" onClick={onView} sx={{fontWeight: 500, fontSize: "12px"}}>
                             View
-                        </Button>
+                        </Button> */}
                         <Button size="sm" variant="solid" color="primary" onClick={onPlay} sx={{fontWeight: 500, fontSize: "12px"}}>
                             <Spacer direction="horizontal" size="4px" />
                             Play

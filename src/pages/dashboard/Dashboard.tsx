@@ -35,6 +35,7 @@ const Dashboard: React.FC = () => {
                     nextSession: new Date(),
                     status: 'active',
                     imageUrl: 'campaign_cover.png',
+                    sessionToken: roomObj.sessionToken,
                 };
                 roomArrayObj.push(campaignRoom);
             });
