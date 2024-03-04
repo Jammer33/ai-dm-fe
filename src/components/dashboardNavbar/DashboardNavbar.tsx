@@ -104,8 +104,8 @@ const DashboardNavbar: React.FC<DashboardNavbarProps> = ({ sessionToken, handleJ
                 <Spacer direction="horizontal" size="8px" />
                 {/* <Button type="Primary" onClick={handleJoinGame}>Join Game</Button> */}
                 <Button type="Primary" onClick={() => onJoinGame(joinToken)}>Join Game</Button>
-                <Spacer direction="horizontal" size="8px" /> 
-                <button className="submit" onClick={handleNewGame} style={{ fontSize: "16px" }}>New Game</button>
+                {/* <Spacer direction="horizontal" size="8px" />  */}
+                {/* <button className="submit" onClick={handleNewGame} style={{ fontSize: "16px" }}>New Game</button> */}
             </Stack>
             <FlexBox>
                 {/* Account username */}
