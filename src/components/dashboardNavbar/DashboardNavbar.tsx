@@ -1,5 +1,5 @@
 // a react nav header for my website
-import React from 'react';
+import React, { useContext } from 'react';
 import { useState } from 'react';
 import './DashboardNavbar.css';
 import Button from '../button/Button';
@@ -46,9 +46,12 @@ const handleCopyToClipboard = (text: string, setCopied: React.Dispatch<React.Set
 }
 
 const DashboardNavbar: React.FC<DashboardNavbarProps> = ({ sessionToken, handleJoinGame, handleNewGame }) => {
-    const username = useAuth().user?.username;
     const [copied, setCopied] = useState<boolean>(false); // State for visual notification
-
+    // const [username, setUsername] = useState();
+    const username = useAuth().user?.username;
+    console.log(useAuth());
+    
+    // setUsername(user);
     // const [joinToken, setJoinToken] = useState<string>(''); // State for join token
     const [joinToken, setJoinToken] = useState('');
 

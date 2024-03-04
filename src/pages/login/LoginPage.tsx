@@ -7,6 +7,7 @@ import Spacer from '../../components/spacer/Spacer';
 import { postLogin } from '../../api/PostLogin';
 import { Alert, Button, Card, FormControl, FormLabel, Input, Sheet, useTheme } from '@mui/joy';
 import { InfoOutlined } from '@mui/icons-material';
+import { useAuth } from '../../provider/AuthProvider';
 
 const LoginPage: React.FC = () => {
     const [email, setEmail] = React.useState('');
@@ -14,6 +15,7 @@ const LoginPage: React.FC = () => {
     const [error, setError] = React.useState('');
     const navigate = useNavigate();
     const theme = useTheme();
+    const { login } = useAuth();
 
     const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setEmail(event.target.value);
@@ -28,6 +30,8 @@ const LoginPage: React.FC = () => {
             const response = await postLogin({email, password});
 
             if (!response.error) {
+                const username = email.split("@")[0];
+                login({email, username});
                 navigate('/dashboard');
             }
         } catch (error) {
