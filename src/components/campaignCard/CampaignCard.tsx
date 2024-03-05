@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import './CampaignCard.css';
-import { AspectRatio, Button, ButtonGroup, Card, CardContent, CardOverflow, Stack, Typography } from '@mui/joy';
+import { AspectRatio, Button, ButtonGroup, Card, CardContent, CardOverflow, Modal, ModalClose, ModalDialog, Stack, Typography } from '@mui/joy';
 import { Spa } from '@mui/icons-material';
 import Spacer from '../spacer/Spacer';
 import { useNavigate } from 'react-router-dom';
@@ -20,9 +20,13 @@ export interface CampaignCardProps {
 const CampaignCard = ({ token, title, description, imageUrl, nextSession, status, isOwner}: CampaignCardProps) => {
 
     const [isDeleted, setIsDeleted] = useState(false);
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
 
     const onDelete = () => {
-        console.log('Delete');
+        setShowDeleteModal(true);
+    };
+
+    const onDeleteConfirm = () => {
         deleteRoom(token).then(response => {
             if (response.error) {
                 console.log("Error deleting room: ", response.error);
@@ -31,7 +35,9 @@ const CampaignCard = ({ token, title, description, imageUrl, nextSession, status
             // console.log("Room deleted: ", response);
             setIsDeleted(true);
         });
-    };
+
+        setShowDeleteModal(false);
+    }
 
     const onView = () => {
         console.log('Edit');
@@ -75,9 +81,20 @@ const CampaignCard = ({ token, title, description, imageUrl, nextSession, status
                         </Button>
                     </ButtonGroup>
                 </Stack>
-
-
-                
+                  <Modal open={showDeleteModal} onClose={() => setShowDeleteModal(false)}>
+                    <ModalDialog layout="center">
+                      <ModalClose />
+                      <Typography level="h3" alignSelf="center">Delete {title}?</Typography>
+                        <Spacer size="8px" />
+                        <Typography>Are you sure you want to delete this campaign?</Typography>
+                        <Spacer size="8px" />
+                        <Stack direction="row" justifyContent="center">
+                            <Button size="sm" color="danger" variant="plain" onClick={onDeleteConfirm}>Delete</Button>
+                            <Spacer size="32px" />
+                            <Button size="sm" variant="plain" onClick={() => setShowDeleteModal(false)}>Cancel</Button>
+                        </Stack>
+                    </ModalDialog>
+                  </Modal>
             </Card>
     );
 };
