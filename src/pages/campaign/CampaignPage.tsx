@@ -215,7 +215,6 @@ const CampaignPage: React.FC<Props> = (props) => {
         // console.log('Joining game with token:', joinToken);
         setSessionToken(token);
         socket.emit('joinGame', token);
-
     };
 
     const handleVoiceInput = () => {

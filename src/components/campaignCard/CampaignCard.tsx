@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './CampaignCard.css';
 import { AspectRatio, Button, ButtonGroup, Card, CardContent, CardOverflow, Stack, Typography } from '@mui/joy';
 import { Spa } from '@mui/icons-material';
 import Spacer from '../spacer/Spacer';
 import { useNavigate } from 'react-router-dom';
+import { deleteRoom } from '../../api/DeleteRoom';
 
 export interface CampaignCardProps {
   token: string;
@@ -12,13 +13,24 @@ export interface CampaignCardProps {
   imageUrl: string;
   nextSession: Date;
   status: 'active' | 'inactive';
-  sessionToken: string;
+  isOwner: boolean;
 }
 
-const CampaignCard = ({ token, title, description, imageUrl, nextSession, status, sessionToken }: CampaignCardProps) => {
+
+const CampaignCard = ({ token, title, description, imageUrl, nextSession, status, isOwner}: CampaignCardProps) => {
+
+    const [isDeleted, setIsDeleted] = useState(false);
 
     const onDelete = () => {
         console.log('Delete');
+        deleteRoom(token).then(response => {
+            if (response.error) {
+                console.log("Error deleting room: ", response.error);
+                return;
+            }
+            // console.log("Room deleted: ", response);
+            setIsDeleted(true);
+        });
     };
 
     const onView = () => {
@@ -27,10 +39,10 @@ const CampaignCard = ({ token, title, description, imageUrl, nextSession, status
 
     const navigate = useNavigate();
     const onPlay = () => {
-        navigate(`/campaign?sessionToken=${sessionToken}`);
+        navigate(`/campaign?sessionToken=${token}`);
     };
 
-    return (
+    return isDeleted ? null : (
             <Card size="md" variant="outlined" sx={{
                 width: "220px",
                 height: "125px",
@@ -49,9 +61,9 @@ const CampaignCard = ({ token, title, description, imageUrl, nextSession, status
                 </CardContent>
                 {/* Buttons */}
                 <Stack direction="row" justifyContent={"space-between"}>
-                    {/* <Button size="sm" color="danger" variant="plain" onClick={onDelete} sx={{fontWeight: 500, fontSize: "12px"}}>
+                    { isOwner && <Button size="sm" color="danger" variant="plain" onClick={onDelete} sx={{fontWeight: 500, fontSize: "12px"}}>
                         Delete
-                    </Button> */}
+                    </Button>}
                     <ButtonGroup >
                         {/* <Button size="md" onClick={onView} sx={{fontWeight: 500, fontSize: "12px"}}>
                             View

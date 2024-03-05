@@ -29,13 +29,13 @@ const Dashboard: React.FC = () => {
             roomArray.forEach(roomStr => {
                 let roomObj = JSON.parse(roomStr);
                 let campaignRoom : CampaignCardProps = {
-                    token: 'c_1234',
+                    token: roomObj.campaignToken,
                     title: (roomObj.name === '') ? 'No Title' : roomObj.name,
                     description: (roomObj.description === '') ? 'No Description' : roomObj.description,
                     nextSession: new Date(),
                     status: 'active',
                     imageUrl: 'campaign_cover.png',
-                    sessionToken: roomObj.sessionToken,
+                    isOwner: roomObj.isOwner,
                 };
                 roomArrayObj.push(campaignRoom);
             });

@@ -4,7 +4,7 @@ import React, { ReactNode, createContext, useContext, useEffect, useState } from
 import { getVerify } from '../api/GetVerify';
 
 interface AuthState {
-    isAuthenticated: boolean;
+    isAuthenticated: boolean | null;
     user: User | undefined; // Replace 'any' with your user object type
     login: (user: User) => void; // Replace 'any' with your user object type
     logout: () => void;
@@ -18,7 +18,7 @@ interface AuthProviderProps {
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User>(); // Replace 'any' with your user object type
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
 
   const logout = () => {
     setUser(undefined);
@@ -31,8 +31,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const userToken = Cookies.get('token');
     if (!userToken || userToken === 'undefined') {
       setIsAuthenticated(false);
+      return;
     }
-    setIsAuthenticated(true);
+    
     
     try {
       const response = await getVerify();
@@ -42,8 +43,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         const username = email.split("@")[0];
         setUser({username, email});
       }
+      setIsAuthenticated(true);
     } catch (error) {
+        console.log(error);
         console.log("Invalid token");
+        setIsAuthenticated(false);
     }
   }
   
