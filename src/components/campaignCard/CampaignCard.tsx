@@ -89,9 +89,9 @@ const CampaignCard = ({ token, title, description, imageUrl, nextSession, status
                         <Typography>Are you sure you want to delete this campaign?</Typography>
                         <Spacer size="8px" />
                         <Stack direction="row" justifyContent="center">
-                            <Button size="sm" color="danger" variant="plain" onClick={onDeleteConfirm}>Delete</Button>
-                            <Spacer size="32px" />
                             <Button size="sm" variant="plain" onClick={() => setShowDeleteModal(false)}>Cancel</Button>
+                            <Spacer size="32px" />
+                            <Button size="sm" color="danger" variant="plain" onClick={onDeleteConfirm}>Delete</Button>
                         </Stack>
                     </ModalDialog>
                   </Modal>

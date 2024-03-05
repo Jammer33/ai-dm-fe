@@ -8,10 +8,33 @@ import Spacer from '../../components/spacer/Spacer';
 import { socket } from '../../socket';
 import queryString from 'query-string';
 import { useLocation } from 'react-router-dom';
+import CreateCharacterModal from './components/CreateCharacterModal';
 
 interface Props {
     // Define props here
 }
+
+interface CampaignInfo {
+    title: string;
+    description: string;
+}
+
+export enum CampaignState {
+    UNKNOWN,
+    CREATE_CHARACTER,
+    ACTIVE,
+}
+
+export interface Character {
+    name: string;
+    level: number;
+    race: string;
+    _class: string;
+    alignment: string;
+    background: string;
+}
+    
+
 
 const CampaignPage: React.FC<Props> = (props) => {
     // Define component logic here
@@ -19,13 +42,13 @@ const CampaignPage: React.FC<Props> = (props) => {
     const [inputText, setInputText] = useState('');
     const [outputText, setOutputText] = useState('');
     const [sessionToken, setSessionToken] = useState('');
-    const [playerInfo, setPlayerInfo] = useState({
-        name: 'Ariel',
-        characterClass: 'Wizard',
-        race: 'Elf',
-        level: 5,
-    });
     const [playerMessage, setPlayerMessage] = useState('');
+    const [campaignInfo, setCampaignInfo] = useState<CampaignInfo>({
+        title: '',
+        description: '',
+    });
+    const [state, setState] = useState<CampaignState>(CampaignState.UNKNOWN);
+
     type Player = {
         name: string;
         message: string;
@@ -39,7 +62,19 @@ const CampaignPage: React.FC<Props> = (props) => {
     const parsed = queryString.parse(useLocation().search);
     const messageStackRef = useRef<HTMLDivElement>(null);
 
+    const location = useLocation();
+
     let session_token = '';
+
+    const startGameWithCharacter = (character: Character) => {
+        if (location.state.title) {
+            // create a new game
+            createNewGame(campaignInfo.title, campaignInfo.description, character);
+        } else {
+            // join an existing game with new character
+            handleJoinGame(sessionToken);
+        }
+    }
 
     useEffect(() => {
         // Scroll to the bottom of the message stack when it updates
@@ -55,16 +90,18 @@ const CampaignPage: React.FC<Props> = (props) => {
 
         const paramsStr = queryString.stringify(parsed);
         if(paramsStr.length != 0) { // query params indicate that we want to join a room
-            let name : string = (parsed["name"] ?? "") as string, description : string = (parsed["description"] ?? "") as string;
             let sessionToken : string = (parsed["sessionToken"] ?? "") as string;
 
-            console.log(name);
-            if (name.length > 0) {
-                createNewGame(name, description);
-            }
             if(sessionToken.length > 0) {
                 handleJoinGame(sessionToken);
             }
+        } else {
+            // we are creating a new campaign
+            setCampaignInfo({
+                title: location.state.title,
+                description: location.state.description,
+            });
+            setState(CampaignState.CREATE_CHARACTER);
         }
         
         function onConnect() {
@@ -161,10 +198,6 @@ const CampaignPage: React.FC<Props> = (props) => {
         setInputText(event.target.value);
     };
 
-    const handleSessionTokenChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setSessionToken(event.target.value);
-    };
-
     const handleSubmit = () => {
         // Handle form submission and update outputText
         console.log(inputText);
@@ -176,43 +209,13 @@ const CampaignPage: React.FC<Props> = (props) => {
     const handleTTSRequest = (text: string) => {
         // use websockets to send inputText to server
         socket.emit('tts', text, sessionToken, playbackSpeed ?? 1);
-    }
-
-    const handleNewGame = () => {
-        // use websockets to send inputText to server
-        createNewGame();
-        setInputText('');
-        setOutputText('');
     };
 
-    function createNewGame(name : string = "", description : string = "") {
-        const character1 = {
-            name: 'Ariel',
-            race: 'Elf',
-            class: 'Wizard',
-        };
-        const character2 = {
-            name: 'James',
-            race: 'Human',
-            class: 'Fighter',
-        };
-        const character3 = {
-            name: 'Connor',
-            race: 'Dwarf',
-            class: 'Cleric',
-        };
-    
-        socket.emit('newGame', [character2], name, description);
-    }
-
-    // const handleJoinGame = () => {
-    //     // console.log('Joining game with token:', joinToken);
-    //     socket.emit('joinGame', sessionToken);
-
-    // };
+    function createNewGame(name : string = "", description : string = "", character: Character) {    
+        socket.emit('newGame', [character], name, description);
+    };
 
     const handleJoinGame = (token: string) => {
-        // console.log('Joining game with token:', joinToken);
         setSessionToken(token);
         socket.emit('joinGame', token);
     };
@@ -243,19 +246,14 @@ const CampaignPage: React.FC<Props> = (props) => {
     return (
 
         <Sheet sx={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
-        <DashboardNavbar sessionToken={sessionToken} handleJoinGame={handleJoinGame} handleNewGame={handleNewGame}/>
+        <DashboardNavbar sessionToken={sessionToken} />
         <Stack ref={messageStackRef} sx={{ flex: "1", display: "flex", flexDirection: "column", gap: "16px", padding: "16px", overflowY: "auto", marginTop: "40px", marginBottom: "100px"}}>
             <Spacer direction="vertical" size="16px" />
-            {/* <MessageCard alignment='right' name='James' messageText='Hi! Excited to begin this campaign :D' />
-            <MessageCard alignment='left' name='Ariel' messageText='Yeah me too! Thanks so much for putting this website together. This should be a lot of fun' />
-            <MessageCard alignment='left' name='DM' messageText='test DM' /> */}
             {playerObj.map((messageObj, index) => (
                 <MessageCard handleTTSRequest={handleTTSRequest} key={index} alignment={messageObj.name === 'DM' ? 'left' : 'right'} name={messageObj.name} messageText={messageObj.message} />
             ))}
         </Stack>
-        {/* <div style={{ display: "flex", justifyContent: "flex-end", gap: "8px", padding: "0 16px", marginBottom: "16px"  }}> */}
         <Box sx={{ position: "fixed", bottom: 0, left: 0, right: 0, display: "flex", justifyContent: "flex-end", gap: "8px", padding: "0 16px", marginBottom: "16px", boxShadow: "0px -1px 5px rgba(0, 0, 0, 0.1)" }}>
-            {/* <button className="submit" onClick={handleNewGame}>New Game</button> */}
             <Textarea
                 size="sm"
                 placeholder="Enter your next move"
@@ -266,28 +264,7 @@ const CampaignPage: React.FC<Props> = (props) => {
             />
             <div style={{ display: "flex", gap: "8px" }}>
                 <Button type='Primary' onDarkBackground onClick={handleSubmit}>Send</Button>
-                {/* <button className="submit" onClick={handleNewGame}>New Game</button> */}
                 <Button type='Secondary' onDarkBackground onClick={handleVoiceInput}>Voice Input</Button>
-                {/* <button className="submit" onClick={handleVoiceInput}>Voice Input</button> */}
-                {/* <input
-                    type='text'
-                    value={sessionToken}
-                    onChange={handleSessionTokenChange}
-                    placeholder="Enter session token here"
-                    style={{
-                        backgroundColor: "#333",
-                        color: "#fff",
-                        border: "1px solid #555",
-                        padding: "10px",
-                        borderRadius: "5px",
-                        boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
-                        outline: "none",
-                        transition: "background-color 0.3s ease",
-                        fontSize: "18px", 
-                    }}
-                ></input> */}
-                {/* <button className="submit" onClick={handleJoinGame}>Join Game</button> */}
-
             </div>
             <FormControl>
                 <FormLabel>Speech Speed</FormLabel>
@@ -296,6 +273,7 @@ const CampaignPage: React.FC<Props> = (props) => {
                 }} />
             </FormControl>
         </Box>
+        <CreateCharacterModal showModal={state === CampaignState.CREATE_CHARACTER} startGame={startGameWithCharacter} setGameState={setState} />
     </Sheet>
     );
 };

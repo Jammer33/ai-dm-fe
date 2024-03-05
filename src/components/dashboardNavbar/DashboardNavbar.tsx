@@ -1,5 +1,5 @@
 // a react nav header for my website
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { useState } from 'react';
 import './DashboardNavbar.css';
 import Button from '../button/Button';
@@ -12,8 +12,6 @@ import { useNavigate, useLocation } from 'react-router-dom';
 interface DashboardNavbarProps {
     // Any additional props for Navbar can be defined here
     sessionToken?: string; // Define sessionToken prop
-    handleJoinGame?: (token: string) => void;
-    handleNewGame?: () => void;
 }
 
 const handleSignOut = async () => {
@@ -45,35 +43,16 @@ const handleCopyToClipboard = (text: string, setCopied: React.Dispatch<React.Set
         });
 }
 
-const DashboardNavbar: React.FC<DashboardNavbarProps> = ({ sessionToken, handleJoinGame, handleNewGame }) => {
+const DashboardNavbar: React.FC<DashboardNavbarProps> = ({ sessionToken }) => {
     const [copied, setCopied] = useState<boolean>(false); // State for visual notification
-    // const [username, setUsername] = useState();
-    const username = useAuth().user?.username;
-    console.log(useAuth());
+    const [username, setUsername] = useState<string|null>();
+    const auth = useAuth();
     
-    // setUsername(user);
-    // const [joinToken, setJoinToken] = useState<string>(''); // State for join token
-    const [joinToken, setJoinToken] = useState('');
-
-    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setJoinToken(event.target.value);
-    };
+    useEffect(() => {
+        setUsername(auth.user?.username);
+    }, [auth]);
 
     const navigate = useNavigate();
-    const onJoinGame = async (token: string) => {
-        if (handleJoinGame) {
-            handleJoinGame(token);
-            return;
-        }
-        return navigate(`/campaign?sessionToken=${token}`);
-    }
-
-    const handleJoinButtonClick = () => {
-        // if (onJoinGame && joinToken.trim() !== '') {
-        //     onJoinGame(joinToken.trim());
-        // }
-    };
-
 
     return (
         <div className="navbar-fixed"> {/* Added a div with class "navbar-fixed" */}
@@ -95,17 +74,6 @@ const DashboardNavbar: React.FC<DashboardNavbarProps> = ({ sessionToken, handleJ
                     </Link>
                 )}
                 <Spacer direction="horizontal" size="16px" />
-                <Textarea
-                    size="sm"
-                    placeholder="Enter join token here"
-                    value={joinToken}
-                    onChange={(e) => setJoinToken(e.target.value)}
-                />
-                <Spacer direction="horizontal" size="8px" />
-                {/* <Button type="Primary" onClick={handleJoinGame}>Join Game</Button> */}
-                <Button type="Primary" onClick={() => onJoinGame(joinToken)}>Join Game</Button>
-                {/* <Spacer direction="horizontal" size="8px" />  */}
-                {/* <button className="submit" onClick={handleNewGame} style={{ fontSize: "16px" }}>New Game</button> */}
             </Stack>
             <FlexBox>
                 {/* Account username */}

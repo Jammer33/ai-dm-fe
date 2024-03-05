@@ -9,6 +9,7 @@ import { Sheet } from '@mui/joy';
 import { getRooms } from '../../api/GetRooms';
 import { CampaignCardProps } from '../../components/campaignCard/CampaignCard';
 import { useAuth } from '../../provider/AuthProvider';
+import Spacer from '../../components/spacer/Spacer';
 
 const Dashboard: React.FC = () => {
     const [campaigns, setCampaigns] = useState(new Array<CampaignCardProps>());
@@ -57,6 +58,7 @@ const Dashboard: React.FC = () => {
         <Sheet>
             <DashboardNavbar />
             <Container>
+                <Spacer size={16} direction="vertical" />
                 <DashboardMainArea 
                     username={user?.username ?? "user"}
                     onNewCampaignClick={() => console.log('New Campaign Clicked')}

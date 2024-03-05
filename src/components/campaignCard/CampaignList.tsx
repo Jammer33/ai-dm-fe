@@ -1,18 +1,20 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import CampaignCard, { CampaignCardProps } from './CampaignCard';
 import FlexBox from '../flexBox/FlexBox';
 import { Colors } from '../../colors';
 import Spacer from '../spacer/Spacer';
 import { useNavigate } from 'react-router-dom';
-import { Button, Input, Typography } from '@mui/joy';
+import { Button, ButtonGroup, Input, Typography } from '@mui/joy';
+import NewCampaignModal from '../newCampaignModal/NewCampaignModal';
 
 interface Props {
     campaigns: CampaignCardProps[];
 }
 
 const CampaignList = ({ campaigns }: Props) => {
-    const [searchTerm, setSearchTerm] = React.useState('');
-    const [filteredCampaigns, setFilteredCampaigns] = React.useState(campaigns);
+    const [searchTerm, setSearchTerm] = useState('');
+    const [filteredCampaigns, setFilteredCampaigns] = useState(campaigns);
+    const [showCreateCampaignModal, setShowCreateCampaignModal] = useState(false);
     const navigate = useNavigate();
 
     const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -22,7 +24,7 @@ const CampaignList = ({ campaigns }: Props) => {
     };
 
     const handleCreateCampaign = () => {
-        navigate('/create-campaign');
+        setShowCreateCampaignModal(true);
     }
 
     useEffect(() => {
@@ -32,8 +34,12 @@ const CampaignList = ({ campaigns }: Props) => {
     return (
         <FlexBox justify="space-between" align="center" direction="column" style={{borderRadius: "10px"}}>
             <FlexBox direction="row" align="center"> 
-                <Button size="md" onClick={handleCreateCampaign}>
-                    Create New Campaign
+                <Button color="neutral" size="md" onClick={handleCreateCampaign} >
+                    Join Campaign
+                </Button>  
+                <Spacer direction="horizontal" size="16px" />
+                <Button color="primary" size="md" onClick={handleCreateCampaign}>
+                    Create Campaign
                 </Button>   
                 <Spacer direction="horizontal" size="16px" />
                 <Input
@@ -50,6 +56,7 @@ const CampaignList = ({ campaigns }: Props) => {
                 />
             ))}
             </FlexBox>
+            <NewCampaignModal showModal={showCreateCampaignModal} setShowModal={setShowCreateCampaignModal} />
         </FlexBox>
     );
 };
