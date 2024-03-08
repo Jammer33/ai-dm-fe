@@ -1,7 +1,6 @@
 import React, { Dispatch, SetStateAction, useState } from 'react';
-import { Modal, ModalDialog, ModalClose, Typography, Button, FormControl, Input, Textarea, FormHelperText, Slider } from "@mui/joy"
+import { Modal, ModalDialog, Typography, Button, FormControl, Input, Textarea, FormHelperText, Slider } from "@mui/joy"
 import { Stack } from "@mui/system"
-import { useNavigate } from 'react-router-dom';
 import Spacer from '../../../components/spacer/Spacer';
 import { CampaignState, Character } from '../CampaignPage';
 
@@ -28,9 +27,6 @@ const CreateCharacterModal = ({showModal, setGameState, startGame}: CreateCharac
         _class: false,
         alignment: false,
     });
-
-
-    const navigate = useNavigate();
 
     const onCreate = () => {
         const newErrors = {
@@ -68,16 +64,6 @@ const CreateCharacterModal = ({showModal, setGameState, startGame}: CreateCharac
     const handleLevelChange = (event: Event, value: number | number[], activeThumb: number) => {
         setLevel(value as number);
     }
-
-    // const handleLevelInput = (event: React.ChangeEvent<HTMLInputElement>) => {
-    //     if (event.target.value.length ===0 ) {
-    //         setLevel('');
-    //     }
-        
-    //     if (event.target.value.length <= 2 && parseInt(event.target.value) <= 20) {
-    //         setLevel(parseInt(event.target.value));
-    //     }
-    // }
 
     const handleRaceChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         if (event.target.value.length <= MAX_TITLE_LENGTH) {

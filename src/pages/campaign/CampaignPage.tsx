@@ -9,6 +9,7 @@ import { socket } from '../../socket';
 import queryString from 'query-string';
 import { useLocation } from 'react-router-dom';
 import CreateCharacterModal from './components/CreateCharacterModal';
+import { getIsInRoom } from '../../api/GetIsInRoom';
 
 interface Props {
     // Define props here
@@ -40,23 +41,19 @@ const CampaignPage: React.FC<Props> = (props) => {
     // Define component logic here
     const [playbackSpeed, setPlaybackSpeed] = useState(1);
     const [inputText, setInputText] = useState('');
-    const [outputText, setOutputText] = useState('');
     const [sessionToken, setSessionToken] = useState('');
-    const [playerMessage, setPlayerMessage] = useState('');
     const [campaignInfo, setCampaignInfo] = useState<CampaignInfo>({
         title: '',
         description: '',
     });
     const [state, setState] = useState<CampaignState>(CampaignState.UNKNOWN);
+    const [userTokenToCharacterName, setUserTokenToCharacterName] = useState<Map<string, string>>(new Map());
 
-    type Player = {
-        name: string;
-        message: string;
-    }
-    const [playerObj, setPlayerObj] = useState<Player[]>([{
-        name: 'help-bot',
-        message: 'Welcome to the chatroom! Please click on the New Game button in the Navbar above 👆 to initiate a game. 😄',
-    } as Player]);
+    const [isInRoom, setIsInRoom] = useState<Boolean>(false);
+
+    type Message = { userToken: string; content: string; createdAt: Date; }
+
+    const [messages, setMessages] = useState<Message[]>([]);
 
     const DM_COMPLETION_TOKEN = "[DONE]";
     const parsed = queryString.parse(useLocation().search);
@@ -67,33 +64,35 @@ const CampaignPage: React.FC<Props> = (props) => {
     let session_token = '';
 
     const startGameWithCharacter = (character: Character) => {
-        if (location.state.title) {
+        if (location?.state?.title) {
             // create a new game
             createNewGame(campaignInfo.title, campaignInfo.description, character);
+            // clear the campaign info
+            setCampaignInfo({
+                title: '',
+                description: '',
+            });
+            // clear the location state
+            window.history.replaceState({}, '', window.location.pathname);
         } else {
             // join an existing game with new character
-            handleJoinGame(sessionToken);
+            handleJoinGame(sessionToken, character);
         }
     }
 
-    useEffect(() => {
-        // Scroll to the bottom of the message stack when it updates
-        if (messageStackRef.current) {
-            messageStackRef.current.scrollTop = messageStackRef.current.scrollHeight;
-        }
-    }, [playerObj]);
+    const getIsPlayerInRoom = async (campaignToken: string) => {
 
-    useEffect(() => {
-        console.log(document);
-        console.log('CampaignPage mounted');
-        console.log('socket:', socket);
+        if (campaignToken) {
+            const isPlayerInRoom = await getIsInRoom(campaignToken);
+            setIsInRoom(isPlayerInRoom.message);
 
-        const paramsStr = queryString.stringify(parsed);
-        if(paramsStr.length != 0) { // query params indicate that we want to join a room
-            let sessionToken : string = (parsed["sessionToken"] ?? "") as string;
+            if (!isPlayerInRoom.message) {
+                setState(CampaignState.CREATE_CHARACTER);
+                return;
+            }
 
-            if(sessionToken.length > 0) {
-                handleJoinGame(sessionToken);
+            if(campaignToken.length > 0) {
+                handleJoinGame(campaignToken);
             }
         } else {
             // we are creating a new campaign
@@ -103,6 +102,26 @@ const CampaignPage: React.FC<Props> = (props) => {
             });
             setState(CampaignState.CREATE_CHARACTER);
         }
+    }
+
+    useEffect(() => {
+        // Scroll to the bottom of the message stack when it updates
+        if (messageStackRef.current) {
+            messageStackRef.current.scrollTop = messageStackRef.current.scrollHeight;
+        }
+    }, [messages]);
+
+    useEffect(() => {
+        console.log(document);
+        console.log('CampaignPage mounted');
+        console.log('socket:', socket);
+
+        let sessionToken : string = (parsed["sessionToken"] ?? "") as string;
+        setSessionToken(sessionToken);
+        console.log(sessionToken);
+        getIsPlayerInRoom(sessionToken);
+
+        
         
         function onConnect() {
             console.log('Connected to server');
@@ -112,27 +131,8 @@ const CampaignPage: React.FC<Props> = (props) => {
             console.log('Disconnected from server');
         }
 
-        function onReply(message: string) {
-            console.log(message);
-            let formattedObj = new Map<String, String>(JSON.parse(message));
-            
-            console.log(formattedObj);
-            let player = "";
-            
-            if(formattedObj.has("player")) {
-                let player1 = formattedObj.get("player") ?? "";
-                player = String(player1);
-                setOutputText(outputText => outputText + "\n" + player + "\n");
-            }
-            
-            if(formattedObj.has("message")) {
-                let playerMessage = formattedObj.get("message") ?? "";
-                // console.log("Player message ---> " + playerMessage);
-
-                setPlayerObj((playerObj) => [...playerObj, {name: player, message: String(playerMessage)}]); 
-                console.log(playerObj);
-                setOutputText(outputText => outputText + "\n" + playerMessage + "\n");
-            }
+        function onReply(message: Message) {
+            setMessages((messages) => [...messages, message]); 
         }
 
         let done = true;
@@ -142,11 +142,11 @@ const CampaignPage: React.FC<Props> = (props) => {
                 done = true; 
             } else {
                 if(done && message.length > 0) { // new message -> new card
-                    setPlayerObj((playerObj) => [...playerObj, {name: 'DM', message: "" + message} as Player]);
+                    setMessages((messages) => [...messages, {userToken: 'DM', content: "" + message} as Message]);
                     done = false;
                 } else if(message.length > 0) { // append to existing message
-                    setPlayerObj((prevPlayerObj) => [...prevPlayerObj.slice(0, prevPlayerObj.length-1), 
-                            {name: 'DM', message: prevPlayerObj[prevPlayerObj.length-1].message + message} as Player]); 
+                    setMessages((messages) => [...messages.slice(0, messages.length-1), 
+                            {userToken: 'DM', content: messages[messages.length-1].content + message} as Message]); 
                 }
             }
         }
@@ -155,14 +155,16 @@ const CampaignPage: React.FC<Props> = (props) => {
             console.log(sessionToken);
             setSessionToken(sessionToken);
             session_token = sessionToken;
+
+            // update the URL
+            window.history.replaceState({}, '', window.location.pathname + `?sessionToken=${sessionToken}`);
         }
 
-        function onJoinGame(previousMessagesStr: string) {
-            console.log("Join game triggered!!!");
-            var previousMessages = new Map<String, String>(JSON.parse(previousMessagesStr));
-            previousMessages.forEach((message, player) => {
-                setPlayerObj((playerObj) => [...playerObj, {name: player, message: String(message)} as Player]); 
-                // setOutputText(outputText => outputText + "\n" + player + ": " + message + "\n");
+        function onJoinGame(previousMessages: Message[], userTokenToCharacterName: Object) {
+            setUserTokenToCharacterName(new Map(Object.entries(userTokenToCharacterName)));
+
+            previousMessages.reverse().forEach((message) => {
+                setMessages((messages) => [...messages, message]); 
             });
         }
 
@@ -180,6 +182,10 @@ const CampaignPage: React.FC<Props> = (props) => {
             });
         }
 
+        function onUpdatePlayerList(newUserTokenToCharacterName: Object) {
+            setUserTokenToCharacterName(new Map([...Object.entries(newUserTokenToCharacterName), ...userTokenToCharacterName.entries()]));
+        }
+
         socket.on('connect', onConnect);
         socket.on('disconnect', onDisconnect);
         socket.on('reply', onReply);
@@ -188,6 +194,7 @@ const CampaignPage: React.FC<Props> = (props) => {
         socket.on('joinGame', onJoinGame);
         socket.on('connect_error', onConnectErr);
         socket.on('tts', onTTS);
+        socket.on('updatePlayerList', onUpdatePlayerList);
 
         return () => {
             socket.close();
@@ -212,12 +219,12 @@ const CampaignPage: React.FC<Props> = (props) => {
     };
 
     function createNewGame(name : string = "", description : string = "", character: Character) {    
-        socket.emit('newGame', [character], name, description);
+        socket.emit('newGame', character, name, description);
     };
 
-    const handleJoinGame = (token: string) => {
+    const handleJoinGame = (token: string, character?: Character) => {
         setSessionToken(token);
-        socket.emit('joinGame', token);
+        socket.emit('joinGame', token, character);
     };
 
     const handleVoiceInput = () => {
@@ -249,8 +256,8 @@ const CampaignPage: React.FC<Props> = (props) => {
         <DashboardNavbar sessionToken={sessionToken} />
         <Stack ref={messageStackRef} sx={{ flex: "1", display: "flex", flexDirection: "column", gap: "16px", padding: "16px", overflowY: "auto", marginTop: "40px", marginBottom: "100px"}}>
             <Spacer direction="vertical" size="16px" />
-            {playerObj.map((messageObj, index) => (
-                <MessageCard handleTTSRequest={handleTTSRequest} key={index} alignment={messageObj.name === 'DM' ? 'left' : 'right'} name={messageObj.name} messageText={messageObj.message} />
+            {messages.map((message, index) => (
+                <MessageCard handleTTSRequest={handleTTSRequest} key={index} alignment={message.userToken === 'DM' ? 'left' : 'right'} name={userTokenToCharacterName.get(message.userToken) || "DM"} messageText={message.content} />
             ))}
         </Stack>
         <Box sx={{ position: "fixed", bottom: 0, left: 0, right: 0, display: "flex", justifyContent: "flex-end", gap: "8px", padding: "0 16px", marginBottom: "16px", boxShadow: "0px -1px 5px rgba(0, 0, 0, 0.1)" }}>
