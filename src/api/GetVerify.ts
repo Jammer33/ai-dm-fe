@@ -3,6 +3,7 @@ import axios from 'axios';
 export type VerifyResponse = {
     message: string;
     email?: string;
+    userToken: string;
 };
 
 const host = process.env.REACT_APP_API_HOST;

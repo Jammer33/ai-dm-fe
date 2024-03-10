@@ -2,14 +2,16 @@ import React, { useState, useEffect, useRef }  from 'react';
 import DashboardNavbar from '../../components/dashboardNavbar/DashboardNavbar';
 import MessageCard from './components/messageCard/MessageCard';
 import '../../components/dashboardNavbar/DashboardNavbar.css';
-import { Box, FormControl, FormLabel, Input, Sheet, Stack, Textarea } from '@mui/joy';
-import Button from '../../components/button/Button';
+import { Box, Button, FormControl, FormLabel, Input, Sheet, Stack, Textarea } from '@mui/joy';
 import Spacer from '../../components/spacer/Spacer';
 import { socket } from '../../socket';
 import queryString from 'query-string';
 import { useLocation } from 'react-router-dom';
 import CreateCharacterModal from './components/CreateCharacterModal';
 import { getIsInRoom } from '../../api/GetIsInRoom';
+import DungeonMasterMessage from './components/messageCard/DungeonMasterMessage';
+import { useAuth } from '../../provider/AuthProvider';
+import { Mic, Send } from '@mui/icons-material';
 
 interface Props {
     // Define props here
@@ -60,6 +62,9 @@ const CampaignPage: React.FC<Props> = (props) => {
     const messageStackRef = useRef<HTMLDivElement>(null);
 
     const location = useLocation();
+
+    const user = useAuth().user;
+    console.log(user);
 
     let session_token = '';
 
@@ -251,37 +256,53 @@ const CampaignPage: React.FC<Props> = (props) => {
     };
 
     return (
-
-        <Sheet sx={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
+        <Stack direction="column" justifyContent="center" sx={{position: "relative"}}>
+        <Sheet sx={{ height: "100vh", display: "flex", flexDirection: "column", width: "1400px", alignSelf: "center"}}>
         <DashboardNavbar sessionToken={sessionToken} />
-        <Stack ref={messageStackRef} sx={{ flex: "1", display: "flex", flexDirection: "column", gap: "16px", padding: "16px", overflowY: "auto", marginTop: "40px", marginBottom: "100px"}}>
+        <Stack ref={messageStackRef} sx={{ flex: "1", display: "flex", flexDirection: "column", gap: "16px", paddingTop: "64px", paddingBottom: "64px", overflowY: "auto", marginTop: "40px", marginBottom: "100px"}}>
             <Spacer direction="vertical" size="16px" />
             {messages.map((message, index) => (
-                <MessageCard handleTTSRequest={handleTTSRequest} key={index} alignment={message.userToken === 'DM' ? 'left' : 'right'} name={userTokenToCharacterName.get(message.userToken) || "DM"} messageText={message.content} />
+                message.userToken === 'DM' ?
+                <DungeonMasterMessage handleTTSRequest={handleTTSRequest} key={index} messageText={message.content} /> :
+                <MessageCard handleTTSRequest={handleTTSRequest} key={index} alignment={message.userToken === user?.userToken ? 'right' : 'left'} name={userTokenToCharacterName.get(message.userToken) || "DM"} messageText={message.content} />
             ))}
         </Stack>
-        <Box sx={{ position: "fixed", bottom: 0, left: 0, right: 0, display: "flex", justifyContent: "flex-end", gap: "8px", padding: "0 16px", marginBottom: "16px", boxShadow: "0px -1px 5px rgba(0, 0, 0, 0.1)" }}>
+        <Box sx={{ position: "fixed", zIndex: 100, width: "1000px", marginLeft: "200px", bottom: 0, display: "flex", justifyContent: "flex-end", gap: "8px", padding: "0 16px", marginBottom: "16px", boxShadow: "0px -1px 5px rgba(0, 0, 0, 0.1)" }}>
             <Textarea
                 size="sm"
                 placeholder="Enter your next move"
                 value={inputText}
                 onChange={handleInputChange}
-                sx={{ flex: "1", position: "relative", zIndex: 1 }}
+                sx={{ flex: "1", position: "relative", paddingLeft: "56px", paddingRight: "56px"}}
                 maxRows={5}
+                endDecorator={
+                <Stack>
+                    <Button variant="plain" color="neutral" type="button" onClick={handleVoiceInput} sx={{position: "absolute", left: 0, top: 0, bottom: 0}}><Mic /></Button>
+                    
+                </Stack>}
+                startDecorator={
+                    <Button variant="plain" color="neutral" type="button" onClick={handleSubmit} sx={{position: "absolute", right: 0, top: 0, bottom: 0}}><Send /></Button>
+                }
+                onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                        handleSubmit();
+                        // stop the event from propagating
+                        e.preventDefault();
+                    }
+                }}
             />
-            <div style={{ display: "flex", gap: "8px" }}>
-                <Button type='Primary' onDarkBackground onClick={handleSubmit}>Send</Button>
-                <Button type='Secondary' onDarkBackground onClick={handleVoiceInput}>Voice Input</Button>
-            </div>
+        </Box>
+        <Box sx={{ position: "fixed", zIndex: 100, bottom: 0, right:0, display: "flex", justifyContent: "flex-end", gap: "8px", padding: "0 16px", marginBottom: "16px", boxShadow: "0px -1px 5px rgba(0, 0, 0, 0.1)" }}>
             <FormControl>
                 <FormLabel>Speech Speed</FormLabel>
-                <Input placeholder="1x" onChange={(e) => {
+                <Input sx={{width: "100px"}} placeholder="1x" onChange={(e) => {
                     setPlaybackSpeed(parseFloat(e.target.value))
                 }} />
             </FormControl>
         </Box>
         <CreateCharacterModal showModal={state === CampaignState.CREATE_CHARACTER} startGame={startGameWithCharacter} setGameState={setState} />
     </Sheet>
+    </Stack>
     );
 };
 

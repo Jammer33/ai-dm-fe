@@ -39,9 +39,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       const response = await getVerify();
 
       if (response.email) {
-        const {email} = response;
+        const {email, userToken} = response;
         const username = email.split("@")[0];
-        setUser({username, email});
+        setUser({username, email, userToken});
       }
       setIsAuthenticated(true);
     } catch (error) {

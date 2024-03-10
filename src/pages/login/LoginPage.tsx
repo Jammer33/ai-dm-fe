@@ -31,7 +31,7 @@ const LoginPage: React.FC = () => {
 
             if (!response.error) {
                 const username = email.split("@")[0];
-                login({email, username});
+                login({email, username, userToken: response.userToken});
                 navigate('/dashboard');
             }
         } catch (error) {

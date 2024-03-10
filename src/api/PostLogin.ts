@@ -2,6 +2,7 @@ import axios from 'axios';
 
 export type LoginResponse = {
     message: string;
+    userToken: string;
     error?: string;
 };
 

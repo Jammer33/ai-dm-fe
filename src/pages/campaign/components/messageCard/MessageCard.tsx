@@ -34,51 +34,6 @@ const MessageCard: React.FC<MessageCardProps> = ({
 
   let isUser = alignment === 'right';
 
-  // const speakMessage = () => {
-  //   const speech = new SpeechSynthesisUtterance(messageText);
-  //   speechSynthesis.speak(speech);
-  //   setIsSpeaking(true);
-
-  //   speech.onend = () => {
-  //     setIsSpeaking(false);
-  //   };
-  // };
-
-  const speakMessage = () => {
-    // If currently speaking, cancel speech
-    if (isSpeaking) {
-      speechSynthesis.cancel();
-      setIsSpeaking(false);
-      return;
-    }
-  
-    const speech = new SpeechSynthesisUtterance(messageText);
-  
-    // Adjust speech parameters for more human-like sound
-    speech.pitch = 1; // Range from 0 to 2, default is 1
-    speech.rate = 1; // Range from 0.1 to 10, default is 1
-    speech.volume = 1; // Range from 0 to 1, default is 1
-  
-    // Get voices
-    const voices = speechSynthesis.getVoices();
-  
-    // Find a human-like voice, if available
-    const humanVoice = voices.find(voice => voice.name.includes('Google')); // Example: 'Google UK English Female'
-  
-    // Set the voice if found
-    if (humanVoice) {
-      speech.voice = humanVoice;
-    }
-  
-    // Speak the message
-    speechSynthesis.speak(speech);
-    setIsSpeaking(true);
-  
-    speech.onend = () => {
-      setIsSpeaking(false);
-    };
-  };
-
   return (
   
     <Stack direction={direction} alignItems="center">
