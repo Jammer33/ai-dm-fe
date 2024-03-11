@@ -66,7 +66,7 @@ const DashboardNavbar: React.FC<DashboardNavbarProps> = ({ sessionToken }) => {
             <Stack direction="row" sx={{ marginLeft: "auto", marginRight: "20px" }}>
                 <Link color="neutral" href="/dashboard">Dashboard</Link>
                 <Spacer direction="horizontal" size="16px" />
-                <Link color="neutral" href="/account">Account</Link>
+                {/* <Link color="neutral" href="/account">Account</Link> */}
                 <Spacer direction="horizontal" size="16px" />
                 {sessionToken && (
                     <Link color="neutral" onClick={() => handleCopyToClipboard(sessionToken, setCopied)}>
