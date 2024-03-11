@@ -14,10 +14,6 @@ interface DashboardNavbarProps {
     sessionToken?: string; // Define sessionToken prop
 }
 
-const handleSignOut = async () => {
-    //add funtionality
-}
-
 // const handleCopyToClipboard = (text: string) => {
 //     navigator.clipboard.writeText(text)
 //         .then(() => {
@@ -46,13 +42,18 @@ const handleCopyToClipboard = (text: string, setCopied: React.Dispatch<React.Set
 const DashboardNavbar: React.FC<DashboardNavbarProps> = ({ sessionToken }) => {
     const [copied, setCopied] = useState<boolean>(false); // State for visual notification
     const [username, setUsername] = useState<string|null>();
+    const navigate = useNavigate();
     const auth = useAuth();
     
     useEffect(() => {
         setUsername(auth.user?.username);
     }, [auth]);
 
-    const navigate = useNavigate();
+
+    const handleSignOut = async () => {
+        auth.logout();
+        navigate('/login')
+    }
 
     return (
         <div className="navbar-fixed"> {/* Added a div with class "navbar-fixed" */}
@@ -67,20 +68,20 @@ const DashboardNavbar: React.FC<DashboardNavbarProps> = ({ sessionToken }) => {
                 <Link color="neutral" href="/dashboard">Dashboard</Link>
                 <Spacer direction="horizontal" size="16px" />
                 {/* <Link color="neutral" href="/account">Account</Link> */}
-                <Spacer direction="horizontal" size="16px" />
                 {sessionToken && (
                     <Link color="neutral" onClick={() => handleCopyToClipboard(sessionToken, setCopied)}>
                         Game Token {copied && <span style={{ color: 'green', marginLeft: '5px' }}>Copied!</span>}
                     </Link>
                 )}
                 <Spacer direction="horizontal" size="16px" />
+                <FlexBox>
+                    {/* Account username */}
+                    <p>{username}</p>
+                </FlexBox>
             </Stack>
-            <FlexBox>
-                {/* Account username */}
-                <p>{username}</p>
-            </FlexBox>
-            <Link href="/login" sx={{ marginLeft: "auto", marginRight: "20px" }}><Button type='Primary' onDarkBackground onClick={handleSignOut}>Sign Out</Button></Link>
-            
+                <Stack direction="row" sx={{ marginLeft: "auto", marginRight: "20px" }}>
+                    <Button type='Primary' onDarkBackground onClick={handleSignOut}>Sign Out</Button>
+                </Stack>
         </Stack>
         </div>
     );
