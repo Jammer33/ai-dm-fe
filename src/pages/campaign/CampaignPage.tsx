@@ -65,11 +65,9 @@ const CampaignPage: React.FC<Props> = (props) => {
 
     const user = useAuth().user;
     console.log(user);
-
     let session_token = '';
-
     const startGameWithCharacter = (character: Character) => {
-        if (location?.state?.title) {
+        if (location.state && location.state.title) {
             // create a new game
             createNewGame(campaignInfo.title, campaignInfo.description, character);
             // clear the campaign info
@@ -126,8 +124,6 @@ const CampaignPage: React.FC<Props> = (props) => {
         console.log(sessionToken);
         getIsPlayerInRoom(sessionToken);
 
-        
-        
         function onConnect() {
             console.log('Connected to server');
         }

@@ -6,6 +6,7 @@ import Spacer from '../spacer/Spacer';
 import { useNavigate } from 'react-router-dom';
 import { Button, ButtonGroup, Input, Typography } from '@mui/joy';
 import NewCampaignModal from '../newCampaignModal/NewCampaignModal';
+import JoinCampaignModal from '../joinCampaignModal/JoinCampaignModal';
 
 interface Props {
     campaigns: CampaignCardProps[];
@@ -15,6 +16,7 @@ const CampaignList = ({ campaigns }: Props) => {
     const [searchTerm, setSearchTerm] = useState('');
     const [filteredCampaigns, setFilteredCampaigns] = useState(campaigns);
     const [showCreateCampaignModal, setShowCreateCampaignModal] = useState(false);
+    const [showJoinCampaignModal, setShowJoinCampaignModal] = useState(false);
     const navigate = useNavigate();
 
     const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -27,6 +29,10 @@ const CampaignList = ({ campaigns }: Props) => {
         setShowCreateCampaignModal(true);
     }
 
+    const handleJoinCampaign = () => {
+        setShowJoinCampaignModal(true);
+    }    
+
     useEffect(() => {
         setFilteredCampaigns(campaigns);
     }, [campaigns]);
@@ -34,7 +40,7 @@ const CampaignList = ({ campaigns }: Props) => {
     return (
         <FlexBox justify="space-between" align="center" direction="column" style={{borderRadius: "10px"}}>
             <FlexBox direction="row" align="center"> 
-                <Button color="neutral" size="md" onClick={handleCreateCampaign} >
+                <Button color="neutral" size="md" onClick={handleJoinCampaign} >
                     Join Campaign
                 </Button>  
                 <Spacer direction="horizontal" size="16px" />
@@ -57,6 +63,7 @@ const CampaignList = ({ campaigns }: Props) => {
             ))}
             </FlexBox>
             <NewCampaignModal showModal={showCreateCampaignModal} setShowModal={setShowCreateCampaignModal} />
+            <JoinCampaignModal showModal={showJoinCampaignModal} setShowModal={setShowJoinCampaignModal} />
         </FlexBox>
     );
 };
