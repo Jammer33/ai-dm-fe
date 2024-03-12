@@ -214,7 +214,7 @@ const CampaignPage: React.FC<Props> = (props) => {
         }
 
         function onUpdatePlayerList(newUserTokenToCharacterName: Object) {
-            setUserTokenToCharacterName(new Map([...Object.entries(newUserTokenToCharacterName), ...userTokenToCharacterName.entries()]));
+            setUserTokenToCharacterName(new Map(Object.entries(newUserTokenToCharacterName)));
         }
 
         socket.connect();
