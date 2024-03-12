@@ -43,7 +43,7 @@ const DungeonMasterMessage: React.FC<DungeonMasterMessageProps> = ({
                 </IconButton>
                 }
 
-                {message.textToSpeechState === TextToSpeechState.LOADING && <Button loading aria-label={"Loading message"}>
+                {message.textToSpeechState === TextToSpeechState.LOADING && <Button sx={{width: "36px"}} loading aria-label={"Loading message"}>
                 </Button>
                 }
             </Stack>
