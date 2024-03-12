@@ -9,12 +9,14 @@ interface DungeonMasterMessageProps {
   message: Message;
   handleTTSRequest: (message: string) => void;
   handleTTSStop: () => void;
+  isAudioPlaying: boolean;
 }
 
 const DungeonMasterMessage: React.FC<DungeonMasterMessageProps> = ({
   message,
   handleTTSRequest,
   handleTTSStop,
+  isAudioPlaying,
 }) => {
   return (
 
@@ -31,7 +33,7 @@ const DungeonMasterMessage: React.FC<DungeonMasterMessageProps> = ({
                 <Spacer direction="vertical" size="5px" />
                 <Typography textAlign="center" level="body-sm">{message.content}</Typography>
                 </Stack>
-                {message.textToSpeechState === TextToSpeechState.DORMANT && <IconButton aria-label={"Speak message"} onClick={() => handleTTSRequest(message.content)}>
+                {message.textToSpeechState === TextToSpeechState.DORMANT && <IconButton disabled={isAudioPlaying} aria-label={"Speak message"} onClick={() => handleTTSRequest(message.content)}>
                 <VolumeUpIcon />
                 </IconButton>
                 }

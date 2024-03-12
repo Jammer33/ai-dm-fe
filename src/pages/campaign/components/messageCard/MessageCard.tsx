@@ -13,6 +13,7 @@ interface MessageCardProps {
   message: Message;
   handleTTSRequest: (message: string) => void;
   handleTTSStop: () => void;
+  isAudioPlaying: boolean;
 }
 
 const MessageCard: React.FC<MessageCardProps> = ({
@@ -22,6 +23,7 @@ const MessageCard: React.FC<MessageCardProps> = ({
   message,
   handleTTSRequest,
   handleTTSStop,
+  isAudioPlaying,
 }) => {
   // Determine justify-content based on alignment
   let justify: 'flex-start' | 'flex-end' | 'center' = 'flex-start';
@@ -54,7 +56,7 @@ const MessageCard: React.FC<MessageCardProps> = ({
               <Spacer direction="vertical" size="5px" />
               <Typography level="body-sm">{message.content}</Typography>
             </Stack>
-            {message.textToSpeechState === TextToSpeechState.DORMANT && <IconButton aria-label={"Speak message"} onClick={() => handleTTSRequest(message.content)}>
+            {message.textToSpeechState === TextToSpeechState.DORMANT && <IconButton disabled={isAudioPlaying} aria-label={"Speak message"} onClick={() => handleTTSRequest(message.content)}>
             <VolumeUpIcon />
             </IconButton>
             }

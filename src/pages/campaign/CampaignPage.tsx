@@ -61,7 +61,7 @@ const CampaignPage: React.FC<Props> = (props) => {
 
     const [isInRoom, setIsInRoom] = useState<Boolean>(false);
 
-    
+    const [isAudioPlaying, setIsAudioPlaying] = useState(false);
 
     const [messages, setMessages] = useState<Message[]>([]);
 
@@ -195,6 +195,7 @@ const CampaignPage: React.FC<Props> = (props) => {
                 source.start();
 
                 source.onended = () => {
+                    setIsAudioPlaying(false);
                     // set the textToSpeechState to DORMANT
                     setMessages((messages) => {
                         const newMessages = [...messages];
@@ -252,6 +253,7 @@ const CampaignPage: React.FC<Props> = (props) => {
     };
 
     const handleTTSRequest = (text: string, index: number) => {
+        setIsAudioPlaying(true);
         // use websockets to send inputText to server
         socket.emit('tts', text, sessionToken, playbackSpeed ?? 1);
         // set the textToSpeechState to LOADING
@@ -274,6 +276,8 @@ const CampaignPage: React.FC<Props> = (props) => {
             });
             return newMessages;
         });
+
+        setIsAudioPlaying(false);
     }
 
 
@@ -317,8 +321,8 @@ const CampaignPage: React.FC<Props> = (props) => {
             <Spacer direction="vertical" size="16px" />
             {messages.map((message, index) => (
                 message.userToken === 'DM' ?
-                <DungeonMasterMessage handleTTSRequest={(content) => handleTTSRequest(content, index)} handleTTSStop={handleTTSStop} key={index} message={message} /> :
-                <MessageCard handleTTSRequest={(content) => handleTTSRequest(content, index)} handleTTSStop={handleTTSStop} key={index} alignment={message.userToken === user?.userToken ? 'right' : 'left'} name={userTokenToCharacterName.get(message.userToken) || "DM"} message={message} />
+                <DungeonMasterMessage isAudioPlaying={isAudioPlaying} handleTTSRequest={(content) => handleTTSRequest(content, index)} handleTTSStop={handleTTSStop} key={index} message={message} /> :
+                <MessageCard isAudioPlaying={isAudioPlaying} handleTTSRequest={(content) => handleTTSRequest(content, index)} handleTTSStop={handleTTSStop} key={index} alignment={message.userToken === user?.userToken ? 'right' : 'left'} name={userTokenToCharacterName.get(message.userToken) || "DM"} message={message} />
             ))}
         </Stack>
         <Box sx={{ position: "fixed", zIndex: 100, width: "1000px", marginLeft: "200px", bottom: 0, display: "flex", justifyContent: "flex-end", gap: "8px", padding: "0 16px", marginBottom: "16px", boxShadow: "0px -1px 5px rgba(0, 0, 0, 0.1)" }}>
