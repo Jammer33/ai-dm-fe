@@ -51,7 +51,7 @@ const CampaignCard = ({ token, title, description, imageUrl, nextSession, status
     return isDeleted ? null : (
             <Card size="md" variant="outlined" sx={{
                 width: "220px",
-                height: "125px",
+                height: "200px",
                 margin: "16px",
             }}>
                 {/* <CardOverflow >
