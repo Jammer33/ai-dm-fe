@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import './CampaignCard.css';
-import { AspectRatio, Button, ButtonGroup, Card, CardContent, CardOverflow, Modal, ModalClose, ModalDialog, Stack, Typography } from '@mui/joy';
-import { Spa } from '@mui/icons-material';
+import { Button, ButtonGroup, Card, CardContent, CardOverflow, Modal, ModalClose, ModalDialog, Stack, Typography } from '@mui/joy';
 import Spacer from '../spacer/Spacer';
 import { useNavigate } from 'react-router-dom';
 import { deleteRoom } from '../../api/DeleteRoom';
+import { Box } from '@mui/system';
 
 export interface CampaignCardProps {
   token: string;
@@ -67,9 +67,9 @@ const CampaignCard = ({ token, title, description, imageUrl, nextSession, status
                 </CardContent>
                 {/* Buttons */}
                 <Stack direction="row" justifyContent={"space-between"}>
-                    { isOwner && <Button size="sm" color="danger" variant="plain" onClick={onDelete} sx={{fontWeight: 500, fontSize: "12px"}}>
+                    { isOwner ? <Button size="sm" color="danger" variant="plain" onClick={onDelete} sx={{fontWeight: 500, fontSize: "12px"}}>
                         Delete
-                    </Button>}
+                    </Button> : <Box />}
                     <ButtonGroup >
                         {/* <Button size="md" onClick={onView} sx={{fontWeight: 500, fontSize: "12px"}}>
                             View

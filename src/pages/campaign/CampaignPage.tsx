@@ -225,6 +225,8 @@ const CampaignPage: React.FC<Props> = (props) => {
             setUserTokenToCharacterName(new Map([...Object.entries(newUserTokenToCharacterName), ...userTokenToCharacterName.entries()]));
         }
 
+        socket.connect();
+
         socket.on('connect', onConnect);
         socket.on('disconnect', onDisconnect);
         socket.on('reply', onReply);
