@@ -32,16 +32,11 @@ const CampaignCard = ({ token, title, description, imageUrl, nextSession, status
                 console.log("Error deleting room: ", response.error);
                 return;
             }
-            // console.log("Room deleted: ", response);
             setIsDeleted(true);
         });
 
         setShowDeleteModal(false);
     }
-
-    const onView = () => {
-        console.log('Edit');
-    };
 
     const navigate = useNavigate();
     const onPlay = () => {

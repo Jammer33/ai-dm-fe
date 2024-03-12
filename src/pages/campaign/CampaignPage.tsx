@@ -76,7 +76,6 @@ const CampaignPage: React.FC<Props> = (props) => {
     const [source, setSource] = useState<any>();
 
     const user = useAuth().user;
-    console.log(user);
     let session_token = '';
     const startGameWithCharacter = (character: Character) => {
         if (location.state && location.state.title) {
@@ -127,13 +126,8 @@ const CampaignPage: React.FC<Props> = (props) => {
     }, [messages]);
 
     useEffect(() => {
-        console.log(document);
-        console.log('CampaignPage mounted');
-        console.log('socket:', socket);
-
         let sessionToken : string = (parsed["sessionToken"] ?? "") as string;
         setSessionToken(sessionToken);
-        console.log(sessionToken);
         getIsPlayerInRoom(sessionToken);
 
         function onConnect() {
@@ -151,7 +145,6 @@ const CampaignPage: React.FC<Props> = (props) => {
         let done = true;
         function onDMMessage(message: string) {
             if(message == DM_COMPLETION_TOKEN) {
-                console.log("dm completion token recieved");
                 done = true; 
             } else {
                 if(done && message.length > 0) { // new message -> new card
@@ -165,7 +158,6 @@ const CampaignPage: React.FC<Props> = (props) => {
         }
 
         function onNewGame(sessionToken: string) { 
-            console.log(sessionToken);
             setSessionToken(sessionToken);
             session_token = sessionToken;
 
@@ -248,7 +240,6 @@ const CampaignPage: React.FC<Props> = (props) => {
 
     const handleSubmit = () => {
         // Handle form submission and update outputText
-        console.log(inputText);
         // use websockets to send inputText to server
         socket.emit('reply', inputText, sessionToken);
         setInputText('');

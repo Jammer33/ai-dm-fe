@@ -66,7 +66,6 @@ const CreateCampaignPage = () => {
       [name]: value,
     }));
     validateInput(name, value);
-    console.log(name, value)
   };
 
   const handleImageChange = (e: any) => {
@@ -86,12 +85,8 @@ const CreateCampaignPage = () => {
   const navigate = useNavigate();
   const onSubmit = async () => {
     if (isFormValid()) {
-      console.log('Form is valid, submitting:', campaignData);
       // redirect to the campaign page and call the new game workflow there 
       return navigate(`/campaign?name=${campaignData.title}&description=${campaignData.description}`);
-    } else {
-      console.log('Form is invalid, displaying errors:', errors);
-      // Handle the display of errors here...
     }
   }
 

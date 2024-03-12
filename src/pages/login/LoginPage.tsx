@@ -16,6 +16,7 @@ const LoginPage: React.FC = () => {
     const navigate = useNavigate();
     const theme = useTheme();
     const { login } = useAuth();
+    const [isLoading, setIsLoading] = React.useState(false);
 
     const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setEmail(event.target.value);
@@ -26,6 +27,7 @@ const LoginPage: React.FC = () => {
     };
 
     const handleLogin = async () => {
+        setIsLoading(true);
         try {
             const response = await postLogin({email, password});
 
@@ -36,6 +38,7 @@ const LoginPage: React.FC = () => {
             }
         } catch (error) {
             setError("Invalid email or password");
+            setIsLoading(false);
         }
     }
 
@@ -90,7 +93,7 @@ const LoginPage: React.FC = () => {
             <Typography level="body-sm"><Link to="/forgot-password">Forgot your password?</Link></Typography>
             <Spacer size={40} direction="vertical" />
 
-            <Button type="submit" onClick={handleLogin}>Login</Button>
+            <Button loading={isLoading} type="submit" onClick={handleLogin}>Login</Button>
             
             <Spacer size={4} direction="vertical" />
             <Typography level="body-sm">Don't have an account?<Link style={{display: "inline"}} to="/signup"> Signup</Link></Typography>
