@@ -1,16 +1,20 @@
 import React from 'react';
 import Spacer from '../../../../components/spacer/Spacer';
-import { Card, Stack, Typography, IconButton } from '@mui/joy';
+import { Card, Stack, Typography, IconButton, Button } from '@mui/joy';
 import VolumeUpIcon from '@mui/icons-material/VolumeUp';
+import { Message, TextToSpeechState } from '../../CampaignPage';
+import { Stop } from '@mui/icons-material';
 
 interface DungeonMasterMessageProps {
-  messageText: string;
+  message: Message;
   handleTTSRequest: (message: string) => void;
+  handleTTSStop: () => void;
 }
 
 const DungeonMasterMessage: React.FC<DungeonMasterMessageProps> = ({
-  messageText,
+  message,
   handleTTSRequest,
+  handleTTSStop,
 }) => {
   return (
 
@@ -25,11 +29,21 @@ const DungeonMasterMessage: React.FC<DungeonMasterMessageProps> = ({
                 <Spacer direction="horizontal" size="10px" />
                 <Stack>
                 <Spacer direction="vertical" size="5px" />
-                <Typography textAlign="center" level="body-sm">{messageText}</Typography>
+                <Typography textAlign="center" level="body-sm">{message.content}</Typography>
                 </Stack>
-                <IconButton aria-label={"Speak message"} onClick={() => handleTTSRequest(messageText)}>
+                {message.textToSpeechState === TextToSpeechState.DORMANT && <IconButton aria-label={"Speak message"} onClick={() => handleTTSRequest(message.content)}>
                 <VolumeUpIcon />
                 </IconButton>
+                }
+
+                {message.textToSpeechState === TextToSpeechState.PLAYING && <IconButton aria-label={"Stop playing"} onClick={handleTTSStop}>
+                <Stop />
+                </IconButton>
+                }
+
+                {message.textToSpeechState === TextToSpeechState.LOADING && <Button loading aria-label={"Loading message"}>
+                </Button>
+                }
             </Stack>
             </Stack>
         </Stack>
