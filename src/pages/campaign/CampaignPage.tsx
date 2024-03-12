@@ -123,7 +123,7 @@ const CampaignPage: React.FC<Props> = (props) => {
         if (messageStackRef.current) {
             messageStackRef.current.scrollTop = messageStackRef.current.scrollHeight;
         }
-    }, [messages]);
+    }, [messages.length]);
 
     useEffect(() => {
         let sessionToken : string = (parsed["sessionToken"] ?? "") as string;
