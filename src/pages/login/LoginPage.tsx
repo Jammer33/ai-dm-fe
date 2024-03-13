@@ -34,7 +34,7 @@ const LoginPage: React.FC = () => {
   const referenceButtonRef = useRef<HTMLButtonElement>(null);
 
   const googleLogin = useGoogleLogin({
-    onSuccess: (codeResponse) =>
+    onSuccess: (codeResponse: { access_token: string; }) =>
       handleGoogleAuthSuccess(codeResponse.access_token),
     onError: () => handleGoogleAuthFailure(),
   });
@@ -143,13 +143,13 @@ const LoginPage: React.FC = () => {
         <Spacer size={40} direction='vertical' />
 
         <Button ref={referenceButtonRef} type='submit' onClick={handleLogin}>
-          Login
+        <Typography level="title-sm">Login</Typography>
         </Button>
 
         <Spacer size={20} direction='vertical' />
 
-        <Button startDecorator={<GoogleIcon />} onClick={() => googleLogin()}>
-          Google Sign In
+        <Button color="neutral" startDecorator={<GoogleIcon />} onClick={() => googleLogin()}>
+          <Typography level="title-sm">Login with Google</Typography>
         </Button>
 
         <Spacer size={15} direction='vertical' />
