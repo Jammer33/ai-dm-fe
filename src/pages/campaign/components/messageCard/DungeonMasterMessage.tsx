@@ -18,7 +18,6 @@ const DungeonMasterMessage: React.FC<DungeonMasterMessageProps> = ({
   handleTTSStop,
   isAudioPlaying,
 }) => {
-  console.log(message.content);
   return (
 
     <Stack alignSelf="center" direction="column" alignItems="center">
