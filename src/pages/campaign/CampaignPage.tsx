@@ -33,8 +33,6 @@ export interface Character {
     level: number;
     race: string;
     _class: string;
-    alignment: string;
-    background: string;
 }
 
 export type Message = { userToken: string; content: string; createdAt: Date; textToSpeechState: TextToSpeechState;}
