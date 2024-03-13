@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './CampaignCard.css';
-import { AspectRatio, Button, ButtonGroup, Card, CardContent, CardOverflow, Stack, Typography } from '@mui/joy';
-import { Spa } from '@mui/icons-material';
+import { Button, ButtonGroup, Card, CardContent, CardOverflow, Modal, ModalClose, ModalDialog, Stack, Typography } from '@mui/joy';
 import Spacer from '../spacer/Spacer';
+import { useNavigate } from 'react-router-dom';
+import { deleteRoom } from '../../api/DeleteRoom';
+import { Box } from '@mui/system';
 
 export interface CampaignCardProps {
   token: string;
@@ -11,33 +13,47 @@ export interface CampaignCardProps {
   imageUrl: string;
   nextSession: Date;
   status: 'active' | 'inactive';
+  isOwner: boolean;
 }
 
-const CampaignCard = ({ token, title, description, imageUrl, nextSession, status}: CampaignCardProps) => {
+
+const CampaignCard = ({ token, title, description, imageUrl, nextSession, status, isOwner}: CampaignCardProps) => {
+
+    const [isDeleted, setIsDeleted] = useState(false);
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
 
     const onDelete = () => {
-        console.log('Delete');
+        setShowDeleteModal(true);
     };
 
-    const onView = () => {
-        console.log('Edit');
-    };
+    const onDeleteConfirm = () => {
+        deleteRoom(token).then(response => {
+            if (response.error) {
+                console.log("Error deleting room: ", response.error);
+                return;
+            }
+            setIsDeleted(true);
+        });
 
+        setShowDeleteModal(false);
+    }
+
+    const navigate = useNavigate();
     const onPlay = () => {
-        console.log('Play');
+        navigate(`/campaign?sessionToken=${token}`);
     };
 
-    return (
+    return isDeleted ? null : (
             <Card size="md" variant="outlined" sx={{
                 width: "220px",
-                height: "350px",
+                height: "200px",
                 margin: "16px",
             }}>
-                <CardOverflow >
+                {/* <CardOverflow >
                 <AspectRatio ratio="1.7">
                     <img src={imageUrl} alt={`${title} thumbnail`} className="campaign-card__image" />
                 </AspectRatio>
-                </CardOverflow>
+                </CardOverflow> */}
                 <CardContent>
                     <Stack spacing={1}>
                         <Typography level="title-md">{title}</Typography>
@@ -46,13 +62,13 @@ const CampaignCard = ({ token, title, description, imageUrl, nextSession, status
                 </CardContent>
                 {/* Buttons */}
                 <Stack direction="row" justifyContent={"space-between"}>
-                    <Button size="sm" color="danger" variant="plain" onClick={onDelete} sx={{fontWeight: 500, fontSize: "12px"}}>
+                    { isOwner ? <Button size="sm" color="danger" variant="plain" onClick={onDelete} sx={{fontWeight: 500, fontSize: "12px"}}>
                         Delete
-                    </Button>
+                    </Button> : <Box />}
                     <ButtonGroup >
-                        <Button size="md" onClick={onView} sx={{fontWeight: 500, fontSize: "12px"}}>
+                        {/* <Button size="md" onClick={onView} sx={{fontWeight: 500, fontSize: "12px"}}>
                             View
-                        </Button>
+                        </Button> */}
                         <Button size="sm" variant="solid" color="primary" onClick={onPlay} sx={{fontWeight: 500, fontSize: "12px"}}>
                             <Spacer direction="horizontal" size="4px" />
                             Play
@@ -60,9 +76,20 @@ const CampaignCard = ({ token, title, description, imageUrl, nextSession, status
                         </Button>
                     </ButtonGroup>
                 </Stack>
-
-
-                
+                  <Modal open={showDeleteModal} onClose={() => setShowDeleteModal(false)}>
+                    <ModalDialog layout="center">
+                      <ModalClose />
+                      <Typography level="h3" alignSelf="center">Delete {title}?</Typography>
+                        <Spacer size="8px" />
+                        <Typography>Are you sure you want to delete this campaign?</Typography>
+                        <Spacer size="8px" />
+                        <Stack direction="row" justifyContent="center">
+                            <Button size="sm" variant="plain" onClick={() => setShowDeleteModal(false)}>Cancel</Button>
+                            <Spacer size="32px" />
+                            <Button size="sm" color="danger" variant="plain" onClick={onDeleteConfirm}>Delete</Button>
+                        </Stack>
+                    </ModalDialog>
+                  </Modal>
             </Card>
     );
 };

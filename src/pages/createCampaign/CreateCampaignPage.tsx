@@ -5,7 +5,7 @@ import Typography from '../../components/text/Typography';
 import Spacer from '../../components/spacer/Spacer';
 import InputField from '../../components/inputField/InputField';
 import Button from '../../components/button/Button';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import DashboardNavbar from '../../components/dashboardNavbar/DashboardNavbar';
 import './CreateCampaignPage.css';
 import TypographySizes from '../../TypographySizes';
@@ -15,7 +15,6 @@ interface CampaignData {
     title: string;
     description: string;
     startDate: string;
-    image: any;
 }
 
 const CreateCampaignPage = () => {
@@ -23,14 +22,12 @@ const CreateCampaignPage = () => {
     title: '',
     description: '',
     startDate: '',
-    image: null,
   });
 
   const [errors, setErrors] = useState({
     title: '',
     description: '',
     startDate: '',
-    image: '',
   });
 
   const validateInput = (name: string, value: any) => {
@@ -69,7 +66,6 @@ const CreateCampaignPage = () => {
       [name]: value,
     }));
     validateInput(name, value);
-    console.log(name, value)
   };
 
   const handleImageChange = (e: any) => {
@@ -86,13 +82,11 @@ const CreateCampaignPage = () => {
     return Object.values(errors).every(error => error === '');
   };
 
+  const navigate = useNavigate();
   const onSubmit = async () => {
     if (isFormValid()) {
-      console.log('Form is valid, submitting:', campaignData);
-      // Proceed with form submission logic...
-    } else {
-      console.log('Form is invalid, displaying errors:', errors);
-      // Handle the display of errors here...
+      // redirect to the campaign page and call the new game workflow there 
+      return navigate(`/campaign?name=${campaignData.title}&description=${campaignData.description}`);
     }
   }
 
@@ -119,14 +113,6 @@ const CreateCampaignPage = () => {
                 required
                 onChange={handleChange}
                 error={errors.description}
-            />
-            <Spacer direction="vertical"size={30} />
-            <InputField
-                type="file"
-                header="Campaign Image"
-                name="image"
-                onChange={handleImageChange}
-                error={errors.image}
             />
             <Spacer direction="vertical" size="20px" />
             <Button type="Primary" size="Medium" onClick={onSubmit}>Create Campaign</Button>

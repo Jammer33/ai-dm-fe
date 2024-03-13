@@ -52,13 +52,16 @@ const ResetPasswordPage: React.FC = () => {
         setSubmitted(true);
         const passwordValidation = validatePassword(password);
         const confirmPasswordValidation = validateConfirmPassword(confirmPassword);
+        
+        // get reset token from url param
+        const resetToken = new URLSearchParams(window.location.search).get('resetToken');
 
-        if (!(passwordValidation && confirmPasswordValidation)) {
+        if (!(passwordValidation && confirmPasswordValidation && resetToken)) {
             return;
         }
 
         try {
-            const response = await postResetPassword({ password });
+            const response = await postResetPassword({ password, resetToken });
             if (!response.error) {
                 navigate('/login');
             }

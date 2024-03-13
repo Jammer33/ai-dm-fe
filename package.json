@@ -10,6 +10,7 @@
     "@mui/icons-material": "^5.15.4",
     "@mui/joy": "^5.0.0-beta.22",
     "@mui/material": "^5.15.4",
+    "@mui/system": "^5.15.6",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
@@ -20,6 +21,7 @@
     "axios": "^1.5.1",
     "eventsource": "^2.0.2",
     "js-cookie": "^3.0.5",
+    "query-string": "^8.2.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.16.0",
@@ -29,7 +31,7 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "HTTPS=true SSL_CRT_FILE=./reactcert/server.crt SSL_KEY_FILE=./reactcert/server.key react-scripts start",
+    "start": "export HTTPS=true&&SSL_CRT_FILE=cert.pem&&SSL_KEY_FILE=key.pem react-scripts start",
     "start-windows": "export HTTPS=true&&SSL_CRT_FILE=cert.pem&&SSL_KEY_FILE=key.pem react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",

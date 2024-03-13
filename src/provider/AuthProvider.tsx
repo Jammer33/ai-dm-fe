@@ -1,11 +1,12 @@
 // AuthContext.tsx
 import Cookies from 'js-cookie';
-import React, { createContext, useState, useContext, ReactNode, useEffect } from 'react';
+import React, { ReactNode, createContext, useContext, useEffect, useState } from 'react';
+import { getVerify } from '../api/GetVerify';
 
 interface AuthState {
-    isAuthenticated: boolean;
+    isAuthenticated: boolean | null;
     user: User | undefined; // Replace 'any' with your user object type
-    login: (user: any) => void; // Replace 'any' with your user object type
+    login: (user: User) => void; // Replace 'any' with your user object type
     logout: () => void;
   }
 
@@ -17,12 +18,7 @@ interface AuthProviderProps {
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User>(); // Replace 'any' with your user object type
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
-
-  const login = (user: User) => {
-    setUser(user);
-    setIsAuthenticated(true);
-  };
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
 
   const logout = () => {
     setUser(undefined);
@@ -31,7 +27,38 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     Cookies.remove('token');
   };
 
-  // Optional: Add useEffect to check initial authentication state, e.g., check if token exists in storage (make a request to the server and see if comes back authed?)
+  const checkUserToken = async () => {
+    const userToken = Cookies.get('token');
+    if (!userToken || userToken === 'undefined') {
+      setIsAuthenticated(false);
+      return;
+    }
+    
+    
+    try {
+      const response = await getVerify();
+
+      if (response.email) {
+        const {email, userToken} = response;
+        const username = email.split("@")[0];
+        setUser({username, email, userToken});
+      }
+      setIsAuthenticated(true);
+    } catch (error) {
+        console.log(error);
+        console.log("Invalid token");
+        setIsAuthenticated(false);
+    }
+  }
+  
+  useEffect(() => {
+    checkUserToken();
+  }, []);
+
+  const login = (user: User) => {
+    setUser(user);
+    setIsAuthenticated(true);
+  };
 
   return (
     <AuthContext.Provider value={{ isAuthenticated, user, login, logout }}>
@@ -48,10 +75,10 @@ export const useAuth = (): AuthState => {
   return context;
 };
 
-export const useProtectedRoute = () => {
-  const { isAuthenticated } = useAuth();
-  if (!isAuthenticated) {
-    // Redirect to login page
-    // return <Navigate to="/login" />;
-  }
-}
+// export const useProtectedRoute = () => {
+//   const navigate = useNavigate();
+//   const { isAuthenticated } = useAuth();
+//   if (!isAuthenticated) {
+//     navigate('/login');
+//   }
+// }

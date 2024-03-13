@@ -7,6 +7,7 @@ import Spacer from '../../components/spacer/Spacer';
 import { postLogin } from '../../api/PostLogin';
 import { Alert, Button, Card, FormControl, FormLabel, Input, Sheet, useTheme } from '@mui/joy';
 import { InfoOutlined } from '@mui/icons-material';
+import { useAuth } from '../../provider/AuthProvider';
 
 const LoginPage: React.FC = () => {
     const [email, setEmail] = React.useState('');
@@ -14,6 +15,8 @@ const LoginPage: React.FC = () => {
     const [error, setError] = React.useState('');
     const navigate = useNavigate();
     const theme = useTheme();
+    const { login } = useAuth();
+    const [isLoading, setIsLoading] = React.useState(false);
 
     const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setEmail(event.target.value);
@@ -24,14 +27,18 @@ const LoginPage: React.FC = () => {
     };
 
     const handleLogin = async () => {
+        setIsLoading(true);
         try {
             const response = await postLogin({email, password});
 
             if (!response.error) {
+                const username = email.split("@")[0];
+                login({email, username, userToken: response.userToken});
                 navigate('/dashboard');
             }
         } catch (error) {
             setError("Invalid email or password");
+            setIsLoading(false);
         }
     }
 
@@ -86,7 +93,7 @@ const LoginPage: React.FC = () => {
             <Typography level="body-sm"><Link to="/forgot-password">Forgot your password?</Link></Typography>
             <Spacer size={40} direction="vertical" />
 
-            <Button type="submit" onClick={handleLogin}>Login</Button>
+            <Button loading={isLoading} type="submit" onClick={handleLogin}>Login</Button>
             
             <Spacer size={4} direction="vertical" />
             <Typography level="body-sm">Don't have an account?<Link style={{display: "inline"}} to="/signup"> Signup</Link></Typography>

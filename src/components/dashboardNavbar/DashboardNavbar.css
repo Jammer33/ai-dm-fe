@@ -39,3 +39,15 @@
 .navbar-login:hover {
     background-color: #555; /* Adjust the hover color as per the image */
 }
+
+
+.navbar-fixed {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 999; /* Adjust the z-index as needed */
+    width: 100%;
+    background-color: white; /* Match your background color */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Optional: Add a shadow */
+}

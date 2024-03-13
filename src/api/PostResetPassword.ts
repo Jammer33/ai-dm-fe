@@ -7,6 +7,7 @@ export type ResetPasswordResponse = {
 
 export type ResetPasswordRequest = {
     password: string;
+    resetToken: string;
 };
 
 const host = process.env.REACT_APP_API_HOST

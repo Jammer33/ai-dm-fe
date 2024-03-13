@@ -16,6 +16,7 @@ const SignupPage: React.FC = () => {
     const [confirmPasswordError, setConfirmPasswordError] = React.useState('');
     const [submitted, setSubmitted] = React.useState(false);
     const [emailInUserError, setEmailInUserError] = React.useState('');
+    const [isLoading, setIsLoading] = React.useState(false);
 
     const navigate = useNavigate();
     const theme = useTheme();
@@ -74,13 +75,16 @@ const SignupPage: React.FC = () => {
             return;
         }
 
+        setIsLoading(true);
+
         try {
             const response = await postSignup({ email, password });
             if (!response.error) {
-                navigate('/dashboard');
+                navigate('/login');
             }
         } catch (error) {
             setEmailInUserError("This email is already in use");
+            setIsLoading(false);
         }
     };
 
@@ -140,7 +144,7 @@ const SignupPage: React.FC = () => {
                 </FormControl>
                 <Spacer size={40} direction="vertical" />
 
-                <Button type="submit" onClick={handleSignup}>Signup</Button>
+                <Button loading={isLoading} type="submit" onClick={handleSignup}>Signup</Button>
                 <Spacer size={4} direction="vertical" />
                 <Typography level="body-sm">Already have an account?<Link style={{display: "inline"}} to="/login"> Login</Link></Typography>
                 <Spacer size={40} direction="vertical" />
