@@ -4,9 +4,10 @@ import Typography from "@mui/joy/Typography";
 import { Link, useNavigate } from "react-router-dom";
 import Logo from "../../components/Logo";
 import Spacer from "../../components/spacer/Spacer";
-import { useGoogleLogin, GoogleLogin } from "@react-oauth/google";
+import { useGoogleLogin } from "@react-oauth/google";
 import { jwtDecode } from "jwt-decode";
 import { postLogin, postGoogleAuthLogin } from "../../api/PostLogin";
+import GoogleIcon from "../../components/googleIcon/GoogleIcon";
 import {
   Alert,
   Button,
@@ -31,14 +32,12 @@ const LoginPage: React.FC = () => {
   const [isLoading, setIsLoading] = React.useState(false);
 
   const referenceButtonRef = useRef<HTMLButtonElement>(null);
-  const [dynamicWidth, setDynamicWidth] = useState<number | null>(null);
 
-  useEffect(() => {
-    if (referenceButtonRef.current) {
-      const referenceButtonWidth = referenceButtonRef.current.offsetWidth;
-      setDynamicWidth(referenceButtonWidth);
-    }
-  }, [referenceButtonRef]);
+  const googleLogin = useGoogleLogin({
+    onSuccess: (codeResponse) =>
+      handleGoogleAuthSuccess(codeResponse.access_token),
+    onError: () => handleGoogleAuthFailure(),
+  });
 
   const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(event.target.value);
@@ -62,17 +61,12 @@ const LoginPage: React.FC = () => {
     }
   };
 
-  const handleGoogleAuthSuccess = async (res: any) => {
+  const handleGoogleAuthSuccess = async (access_token: string) => {
     try {
-      var decoded_res = jwtDecode(res.credential) as any;
-
-      // no saved passwords for google auth
-      const password = "";
-      const { email } = decoded_res;
-      const response = await postGoogleAuthLogin({ email, password });
+      const response = await postGoogleAuthLogin({ access_token });
 
       if (!response.error) {
-        const username = email.split("@")[0];
+        const username = response.email.split("@")[0];
         login({ email, username, userToken: response.userToken });
         navigate("/dashboard");
       }
@@ -154,15 +148,9 @@ const LoginPage: React.FC = () => {
 
         <Spacer size={20} direction='vertical' />
 
-        <GoogleLogin
-          onSuccess={handleGoogleAuthSuccess}
-          onError={handleGoogleAuthFailure}
-          shape='square'
-          type='standard'
-          theme='outline'
-          width={dynamicWidth ? `${dynamicWidth}px` : "auto"}
-          size='large'
-        />
+        <Button startDecorator={<GoogleIcon />} onClick={() => googleLogin()}>
+          Google Sign In
+        </Button>
 
         <Spacer size={15} direction='vertical' />
 
