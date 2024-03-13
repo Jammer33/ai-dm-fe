@@ -50,10 +50,6 @@ const Dashboard: React.FC = () => {
         getCampaignRooms();
     }, []);
 
-    useEffect(() => {
-        console.log(campaigns);
-    }, [campaigns]);
-    
     return (
         <Sheet>
             <DashboardNavbar />

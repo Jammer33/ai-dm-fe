@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import './CampaignCard.css';
-import { AspectRatio, Button, ButtonGroup, Card, CardContent, CardOverflow, Modal, ModalClose, ModalDialog, Stack, Typography } from '@mui/joy';
-import { Spa } from '@mui/icons-material';
+import { Button, ButtonGroup, Card, CardContent, CardOverflow, Modal, ModalClose, ModalDialog, Stack, Typography } from '@mui/joy';
 import Spacer from '../spacer/Spacer';
 import { useNavigate } from 'react-router-dom';
 import { deleteRoom } from '../../api/DeleteRoom';
+import { Box } from '@mui/system';
 
 export interface CampaignCardProps {
   token: string;
@@ -32,16 +32,11 @@ const CampaignCard = ({ token, title, description, imageUrl, nextSession, status
                 console.log("Error deleting room: ", response.error);
                 return;
             }
-            // console.log("Room deleted: ", response);
             setIsDeleted(true);
         });
 
         setShowDeleteModal(false);
     }
-
-    const onView = () => {
-        console.log('Edit');
-    };
 
     const navigate = useNavigate();
     const onPlay = () => {
@@ -51,7 +46,7 @@ const CampaignCard = ({ token, title, description, imageUrl, nextSession, status
     return isDeleted ? null : (
             <Card size="md" variant="outlined" sx={{
                 width: "220px",
-                height: "125px",
+                height: "200px",
                 margin: "16px",
             }}>
                 {/* <CardOverflow >
@@ -67,9 +62,9 @@ const CampaignCard = ({ token, title, description, imageUrl, nextSession, status
                 </CardContent>
                 {/* Buttons */}
                 <Stack direction="row" justifyContent={"space-between"}>
-                    { isOwner && <Button size="sm" color="danger" variant="plain" onClick={onDelete} sx={{fontWeight: 500, fontSize: "12px"}}>
+                    { isOwner ? <Button size="sm" color="danger" variant="plain" onClick={onDelete} sx={{fontWeight: 500, fontSize: "12px"}}>
                         Delete
-                    </Button>}
+                    </Button> : <Box />}
                     <ButtonGroup >
                         {/* <Button size="md" onClick={onView} sx={{fontWeight: 500, fontSize: "12px"}}>
                             View

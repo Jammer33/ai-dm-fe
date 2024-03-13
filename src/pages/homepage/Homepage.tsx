@@ -16,7 +16,6 @@ const Homepage = () => {
   const [password, setPassword] = useState('');
 
   const handleLogin = () => {
-    console.log(email, password);
     // make call
     // if successful, route to player page
     // else, display error message

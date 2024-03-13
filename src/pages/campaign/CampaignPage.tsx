@@ -36,6 +36,14 @@ export interface Character {
     alignment: string;
     background: string;
 }
+
+export type Message = { userToken: string; content: string; createdAt: Date; textToSpeechState: TextToSpeechState;}
+
+export enum TextToSpeechState {
+    DORMANT,
+    LOADING,
+    PLAYING,
+}
     
 
 
@@ -53,7 +61,7 @@ const CampaignPage: React.FC<Props> = (props) => {
 
     const [isInRoom, setIsInRoom] = useState<Boolean>(false);
 
-    type Message = { userToken: string; content: string; createdAt: Date; }
+    const [isAudioPlaying, setIsAudioPlaying] = useState(false);
 
     const [messages, setMessages] = useState<Message[]>([]);
 
@@ -63,8 +71,11 @@ const CampaignPage: React.FC<Props> = (props) => {
 
     const location = useLocation();
 
+    const audioContext = new window.AudioContext();
+
+    const [source, setSource] = useState<any>();
+
     const user = useAuth().user;
-    console.log(user);
     let session_token = '';
     const startGameWithCharacter = (character: Character) => {
         if (location.state && location.state.title) {
@@ -112,16 +123,11 @@ const CampaignPage: React.FC<Props> = (props) => {
         if (messageStackRef.current) {
             messageStackRef.current.scrollTop = messageStackRef.current.scrollHeight;
         }
-    }, [messages]);
+    }, [messages.length]);
 
     useEffect(() => {
-        console.log(document);
-        console.log('CampaignPage mounted');
-        console.log('socket:', socket);
-
         let sessionToken : string = (parsed["sessionToken"] ?? "") as string;
         setSessionToken(sessionToken);
-        console.log(sessionToken);
         getIsPlayerInRoom(sessionToken);
 
         function onConnect() {
@@ -133,27 +139,25 @@ const CampaignPage: React.FC<Props> = (props) => {
         }
 
         function onReply(message: Message) {
-            setMessages((messages) => [...messages, message]); 
+            setMessages((messages) => [...messages, {...message, textToSpeechState: TextToSpeechState.DORMANT}]); 
         }
 
         let done = true;
         function onDMMessage(message: string) {
             if(message == DM_COMPLETION_TOKEN) {
-                console.log("dm completion token recieved");
                 done = true; 
             } else {
                 if(done && message.length > 0) { // new message -> new card
-                    setMessages((messages) => [...messages, {userToken: 'DM', content: "" + message} as Message]);
+                    setMessages((messages) => [...messages, {userToken: 'DM', content: "" + message, textToSpeechState: TextToSpeechState.DORMANT} as Message]);
                     done = false;
                 } else if(message.length > 0) { // append to existing message
                     setMessages((messages) => [...messages.slice(0, messages.length-1), 
-                            {userToken: 'DM', content: messages[messages.length-1].content + message} as Message]); 
+                            {userToken: 'DM', content: messages[messages.length-1].content + message, textToSpeechState: TextToSpeechState.DORMANT} as Message]); 
                 }
             }
         }
 
         function onNewGame(sessionToken: string) { 
-            console.log(sessionToken);
             setSessionToken(sessionToken);
             session_token = sessionToken;
 
@@ -165,7 +169,7 @@ const CampaignPage: React.FC<Props> = (props) => {
             setUserTokenToCharacterName(new Map(Object.entries(userTokenToCharacterName)));
 
             previousMessages.reverse().forEach((message) => {
-                setMessages((messages) => [...messages, message]); 
+                setMessages((messages) => [...messages, {...message, textToSpeechState: TextToSpeechState.DORMANT}]); 
             });
         }
 
@@ -174,18 +178,46 @@ const CampaignPage: React.FC<Props> = (props) => {
         }
 
         function onTTS(data: any) {
-            const audioContext = new window.AudioContext();
             const source = audioContext.createBufferSource();
+            setSource(source);
+
             audioContext.decodeAudioData(data, (buffer) => {
                 source.buffer = buffer;
                 source.connect(audioContext.destination);
                 source.start();
+
+                source.onended = () => {
+                    setIsAudioPlaying(false);
+                    // set the textToSpeechState to DORMANT
+                    setMessages((messages) => {
+                        const newMessages = [...messages];
+                        newMessages.forEach((message, index) => {
+                            if (message.textToSpeechState === TextToSpeechState.PLAYING) {
+                                newMessages[index] = {...newMessages[index], textToSpeechState: TextToSpeechState.DORMANT};
+                            }
+                        });
+                        return newMessages;
+                    });
+                }
+            });
+
+            // set the textToSpeechState to PLAYING where it was LOADING
+            setMessages((messages) => {
+                const newMessages = [...messages];
+                newMessages.forEach((message, index) => {
+                    if (message.textToSpeechState === TextToSpeechState.LOADING) {
+                        newMessages[index] = {...newMessages[index], textToSpeechState: TextToSpeechState.PLAYING};
+                    }
+                });
+                return newMessages;
             });
         }
 
         function onUpdatePlayerList(newUserTokenToCharacterName: Object) {
-            setUserTokenToCharacterName(new Map([...Object.entries(newUserTokenToCharacterName), ...userTokenToCharacterName.entries()]));
+            setUserTokenToCharacterName(new Map(Object.entries(newUserTokenToCharacterName)));
         }
+
+        socket.connect();
 
         socket.on('connect', onConnect);
         socket.on('disconnect', onDisconnect);
@@ -208,16 +240,39 @@ const CampaignPage: React.FC<Props> = (props) => {
 
     const handleSubmit = () => {
         // Handle form submission and update outputText
-        console.log(inputText);
         // use websockets to send inputText to server
         socket.emit('reply', inputText, sessionToken);
         setInputText('');
     };
 
-    const handleTTSRequest = (text: string) => {
+    const handleTTSRequest = (text: string, index: number) => {
+        setIsAudioPlaying(true);
         // use websockets to send inputText to server
         socket.emit('tts', text, sessionToken, playbackSpeed ?? 1);
+        // set the textToSpeechState to LOADING
+        setMessages((messages) => {
+            const newMessages = [...messages];
+            newMessages[index] = {...newMessages[index], textToSpeechState: TextToSpeechState.LOADING};
+            return newMessages;
+        });
     };
+
+    const handleTTSStop = () => {
+        source.stop();
+        // set the textToSpeechState to DORMANT
+        setMessages((messages) => {
+            const newMessages = [...messages];
+            newMessages.forEach((message, index) => {
+                if (message.textToSpeechState === TextToSpeechState.PLAYING) {
+                    newMessages[index] = {...newMessages[index], textToSpeechState: TextToSpeechState.DORMANT};
+                }
+            });
+            return newMessages;
+        });
+
+        setIsAudioPlaying(false);
+    }
+
 
     function createNewGame(name : string = "", description : string = "", character: Character) {    
         socket.emit('newGame', character, name, description);
@@ -259,8 +314,8 @@ const CampaignPage: React.FC<Props> = (props) => {
             <Spacer direction="vertical" size="16px" />
             {messages.map((message, index) => (
                 message.userToken === 'DM' ?
-                <DungeonMasterMessage handleTTSRequest={handleTTSRequest} key={index} messageText={message.content} /> :
-                <MessageCard handleTTSRequest={handleTTSRequest} key={index} alignment={message.userToken === user?.userToken ? 'right' : 'left'} name={userTokenToCharacterName.get(message.userToken) || "DM"} messageText={message.content} />
+                <DungeonMasterMessage isAudioPlaying={isAudioPlaying} handleTTSRequest={(content) => handleTTSRequest(content, index)} handleTTSStop={handleTTSStop} key={index} message={message} /> :
+                <MessageCard isAudioPlaying={isAudioPlaying} handleTTSRequest={(content) => handleTTSRequest(content, index)} handleTTSStop={handleTTSStop} key={index} alignment={message.userToken === user?.userToken ? 'right' : 'left'} name={userTokenToCharacterName.get(message.userToken) || "DM"} message={message} />
             ))}
         </Stack>
         <Box sx={{ position: "fixed", zIndex: 100, width: "1000px", marginLeft: "200px", bottom: 0, display: "flex", justifyContent: "flex-end", gap: "8px", padding: "0 16px", marginBottom: "16px", boxShadow: "0px -1px 5px rgba(0, 0, 0, 0.1)" }}>

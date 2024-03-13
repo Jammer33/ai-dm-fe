@@ -1,26 +1,30 @@
 import React, { useState } from 'react';
 import Spacer from '../../../../components/spacer/Spacer';
-import { Avatar, Box, Card, Stack, Typography, IconButton } from '@mui/joy';
+import { Avatar, Box, Card, Stack, Typography, IconButton, Button } from '@mui/joy';
 import VolumeUpIcon from '@mui/icons-material/VolumeUp';
 import StopIcon from '@mui/icons-material/Stop';
+import { Message, TextToSpeechState } from '../../CampaignPage';
+import { Stop } from '@mui/icons-material';
 
 interface MessageCardProps {
   alignment: 'left' | 'right' | 'center';
   avatarSrc?: string;
   name: string;
-  messageText: string;
+  message: Message;
   handleTTSRequest: (message: string) => void;
+  handleTTSStop: () => void;
+  isAudioPlaying: boolean;
 }
 
 const MessageCard: React.FC<MessageCardProps> = ({
   alignment,
   avatarSrc,
   name,
-  messageText,
+  message,
   handleTTSRequest,
+  handleTTSStop,
+  isAudioPlaying,
 }) => {
-  const [isSpeaking, setIsSpeaking] = useState(false);
-
   // Determine justify-content based on alignment
   let justify: 'flex-start' | 'flex-end' | 'center' = 'flex-start';
   if (alignment === 'right') justify = 'flex-end';
@@ -50,11 +54,21 @@ const MessageCard: React.FC<MessageCardProps> = ({
                 {name}
               </Typography>
               <Spacer direction="vertical" size="5px" />
-              <Typography level="body-sm">{messageText}</Typography>
+              <Typography level="body-sm">{message.content}</Typography>
             </Stack>
-            <IconButton aria-label={isSpeaking ? "Stop speaking" : "Speak message"} onClick={() => handleTTSRequest(messageText)}>
-              {isSpeaking ? <StopIcon /> : <VolumeUpIcon />}
+            {message.textToSpeechState === TextToSpeechState.DORMANT && <IconButton disabled={isAudioPlaying} aria-label={"Speak message"} onClick={() => handleTTSRequest(message.content)}>
+            <VolumeUpIcon />
             </IconButton>
+            }
+
+            {message.textToSpeechState === TextToSpeechState.PLAYING && <IconButton aria-label={"Stop playing"} onClick={handleTTSStop}>
+            <Stop />
+            </IconButton>
+            }
+
+            {message.textToSpeechState === TextToSpeechState.LOADING && <Button loading aria-label={"Loading message"}>
+            </Button>
+            }
           </Stack>
         </Stack>
       </Stack>
