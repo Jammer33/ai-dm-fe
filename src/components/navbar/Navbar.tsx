@@ -29,8 +29,6 @@ const Navbar: React.FC<NavbarProps> = () => {
         }}>
             <Link to='/'><img src="logo.png" alt="Wizard GM Logo" className="navbar-logo" /></Link>
             <Box className="navbar-items">
-                <Link to="/">Home</Link>
-                <Link to="/pricing">Pricing</Link>
             </Box>
             <FlexBox>
                 <Link to="/login"><Button type='Secondary' onDarkBackground>Login</Button></Link>

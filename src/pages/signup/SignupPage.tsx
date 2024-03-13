@@ -4,8 +4,12 @@ import Typography from '@mui/joy/Typography';
 import { Link, useNavigate } from 'react-router-dom';
 import Logo from '../../components/Logo';
 import Spacer from '../../components/spacer/Spacer';
+import { useGoogleLogin } from "@react-oauth/google";
 import { postSignup } from '../../api/PostSignup';
 import { Alert, Button, Card, FormControl, FormLabel, Input, Sheet, useTheme } from '@mui/joy';
+import GoogleIcon from '../../components/googleIcon/GoogleIcon';
+import { useAuth } from '../../provider/AuthProvider';
+import { postGoogleAuthLogin } from '../../api/PostLogin';
 
 const SignupPage: React.FC = () => {
     const [email, setEmail] = React.useState('');
@@ -20,6 +24,32 @@ const SignupPage: React.FC = () => {
 
     const navigate = useNavigate();
     const theme = useTheme();
+
+    const googleLogin = useGoogleLogin({
+        onSuccess: (codeResponse: { access_token: string; }) =>
+          handleGoogleAuthSuccess(codeResponse.access_token),
+        onError: () => handleGoogleAuthFailure(),
+      });
+
+    const { login } = useAuth();
+
+    const handleGoogleAuthSuccess = async (access_token: string) => {
+    try {
+        const response = await postGoogleAuthLogin({ access_token });
+
+        if (!response.error) {
+        const username = response.email.split("@")[0];
+        login({ email, username, userToken: response.userToken });
+        navigate("/dashboard");
+        }
+    } catch (error) {
+        setEmailError("Google Sign In failed");
+    }
+    };
+
+    const handleGoogleAuthFailure = () => {
+        setEmailError("Google Sign In failed");
+    };
 
     const validateEmail = (email: string) => {
         setEmailInUserError('');
@@ -144,7 +174,11 @@ const SignupPage: React.FC = () => {
                 </FormControl>
                 <Spacer size={40} direction="vertical" />
 
-                <Button loading={isLoading} type="submit" onClick={handleSignup}>Signup</Button>
+                <Button loading={isLoading} type="submit" onClick={handleSignup}><Typography level="title-sm">Signup</Typography></Button>
+                <Spacer size={16} direction="vertical" />
+                <Button color="neutral" startDecorator={<GoogleIcon />} onClick={() => googleLogin()}>
+                    <Typography level="title-sm">Signup with Google</Typography>
+                </Button>
                 <Spacer size={4} direction="vertical" />
                 <Typography level="body-sm">Already have an account?<Link style={{display: "inline"}} to="/login"> Login</Link></Typography>
                 <Spacer size={40} direction="vertical" />

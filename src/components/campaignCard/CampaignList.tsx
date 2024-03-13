@@ -4,7 +4,7 @@ import FlexBox from '../flexBox/FlexBox';
 import { Colors } from '../../colors';
 import Spacer from '../spacer/Spacer';
 import { useNavigate } from 'react-router-dom';
-import { Button, ButtonGroup, Input, Typography } from '@mui/joy';
+import { Button, ButtonGroup, Input, Stack, Typography, useTheme } from '@mui/joy';
 import NewCampaignModal from '../newCampaignModal/NewCampaignModal';
 import JoinCampaignModal from '../joinCampaignModal/JoinCampaignModal';
 
@@ -18,6 +18,7 @@ const CampaignList = ({ campaigns }: Props) => {
     const [showCreateCampaignModal, setShowCreateCampaignModal] = useState(false);
     const [showJoinCampaignModal, setShowJoinCampaignModal] = useState(false);
     const navigate = useNavigate();
+    const theme = useTheme();
 
     const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setSearchTerm(event.target.value);
@@ -39,22 +40,31 @@ const CampaignList = ({ campaigns }: Props) => {
 
     return (
         <FlexBox justify="space-between" align="center" direction="column" style={{borderRadius: "10px"}}>
-            <FlexBox direction="row" align="center"> 
+            <Stack flexDirection="row" alignContent="center"
+                sx={{
+                    [theme.breakpoints.down('md')]: {
+                        flexDirection: 'column',
+                        justifyContent: 'center',
+                    }
+                }}
+            > 
                 <Button color="neutral" size="md" onClick={handleJoinCampaign} >
                     Join Campaign
                 </Button>  
                 <Spacer direction="horizontal" size="16px" />
+                <Spacer direction="vertical" size="16px" />
                 <Button color="primary" size="md" onClick={handleCreateCampaign}>
                     Create Campaign
                 </Button>   
                 <Spacer direction="horizontal" size="16px" />
+                <Spacer direction="vertical" size="16px" />
                 <Input
                     size="md"
                     type="text"
                     placeholder="Search Campaigns"
                     onChange={handleSearchChange}
                 />
-            </FlexBox>
+            </Stack>
             <FlexBox direction="row" wrap="wrap" justify="center" align="flex-start">
             {filteredCampaigns.map((campaign,idx) => (
                 <CampaignCard key={idx}

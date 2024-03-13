@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef }  from 'react';
 import DashboardNavbar from '../../components/dashboardNavbar/DashboardNavbar';
 import MessageCard from './components/messageCard/MessageCard';
 import '../../components/dashboardNavbar/DashboardNavbar.css';
-import { Box, Button, FormControl, FormLabel, Input, Sheet, Stack, Textarea } from '@mui/joy';
+import { Box, Button, FormControl, FormLabel, Input, Sheet, Stack, Textarea, useTheme } from '@mui/joy';
 import Spacer from '../../components/spacer/Spacer';
 import { socket } from '../../socket';
 import queryString from 'query-string';
@@ -70,6 +70,7 @@ const CampaignPage: React.FC<Props> = (props) => {
     const messageStackRef = useRef<HTMLDivElement>(null);
 
     const location = useLocation();
+    const theme = useTheme();
 
     const audioContext = new window.AudioContext();
 
@@ -309,9 +310,20 @@ const CampaignPage: React.FC<Props> = (props) => {
 
     return (
         <Stack direction="column" justifyContent="center" sx={{position: "relative"}}>
-        <Sheet sx={{ height: "100vh", display: "flex", flexDirection: "column", width: "1400px", alignSelf: "center"}}>
+        <Sheet sx={{
+            height: "100vh", display: "flex", flexDirection: "column", width: "1400px", alignSelf: "center",
+            [theme.breakpoints.down('lg')]: {
+                width: "95vw",
+            },
+            [theme.breakpoints.down('md')]: {
+                width: "95vw",
+            },
+            [theme.breakpoints.down('sm')]: {
+                width: "95vw",
+            },
+            }}>
         <DashboardNavbar sessionToken={sessionToken} />
-        <Stack ref={messageStackRef} sx={{ flex: "1", display: "flex", flexDirection: "column", gap: "16px", paddingTop: "64px", paddingBottom: "64px", overflowY: "auto", marginTop: "40px", marginBottom: "100px"}}>
+        <Stack ref={messageStackRef} sx={{ flex: "1", display: "flex", flexDirection: "column", gap: "16px", paddingTop: "64px", paddingBottom: "128px", overflowY: "auto", marginTop: "40px"}}>
             <Spacer direction="vertical" size="16px" />
             {messages.map((message, index) => (
                 message.userToken === 'DM' ?
@@ -319,7 +331,19 @@ const CampaignPage: React.FC<Props> = (props) => {
                 <MessageCard isAudioPlaying={isAudioPlaying} handleTTSRequest={(content) => handleTTSRequest(content, index)} handleTTSStop={handleTTSStop} key={index} alignment={message.userToken === user?.userToken ? 'right' : 'left'} name={userTokenToCharacterName.get(message.userToken) || "DM"} message={message} />
             ))}
         </Stack>
-        <Box sx={{ position: "fixed", zIndex: 100, width: "1000px", marginLeft: "200px", bottom: 0, display: "flex", justifyContent: "flex-end", gap: "8px", padding: "0 16px", marginBottom: "16px", boxShadow: "0px -1px 5px rgba(0, 0, 0, 0.1)" }}>
+        <Box sx={{ position: "fixed", zIndex: 100, width: "1000px", bottom: 0, right: 0, left: 0, display: "flex", justifyContent: "flex-end", gap: "8px", padding: "0 16px", marginBottom: "16px", boxShadow: "0px -1px 5px rgba(0, 0, 0, 0.1)",
+        marginLeft: "auto",
+        marginRight: "auto",
+        [theme.breakpoints.down('lg')]: {
+            width: "700px",
+        },
+        [theme.breakpoints.down('md')]: {
+            width: "500px",
+        },
+        [theme.breakpoints.down('sm')]: {
+            width: "300px",
+        }
+    }}>
             <Textarea
                 size="sm"
                 placeholder="Enter your next move"
@@ -344,7 +368,11 @@ const CampaignPage: React.FC<Props> = (props) => {
                 }}
             />
         </Box>
-        <Box sx={{ position: "fixed", zIndex: 100, bottom: 0, right:0, display: "flex", justifyContent: "flex-end", gap: "8px", padding: "0 16px", marginBottom: "16px", boxShadow: "0px -1px 5px rgba(0, 0, 0, 0.1)" }}>
+        <Box sx={{ position: "fixed", zIndex: 100, bottom: 0, right:0, display: "flex", justifyContent: "flex-end", gap: "8px", padding: "0 16px", marginBottom: "16px", boxShadow: "0px -1px 5px rgba(0, 0, 0, 0.1)",
+        [theme.breakpoints.down('sm')]: {
+            display: "none",
+        },
+    }}>
             <FormControl>
                 <FormLabel>Speech Speed</FormLabel>
                 <Input sx={{width: "100px"}} placeholder="1x" onChange={(e) => {
