@@ -18,14 +18,11 @@ const CreateCharacterModal = ({showModal, setGameState, startGame}: CreateCharac
     const [level, setLevel] = useState(3);
     const [race, setRace] = useState('');
     const [_class, setClass] = useState('');
-    const [background, setBackground] = useState('');
-    const [alignment, setAlignment] = useState('');
 
     const [error, setError] = useState({
         name: false,
         race: false,
         _class: false,
-        alignment: false,
     });
 
     const onCreate = () => {
@@ -33,7 +30,6 @@ const CreateCharacterModal = ({showModal, setGameState, startGame}: CreateCharac
             name: !name,
             race: !race,
             _class: !_class,
-            alignment: !alignment,
         };
 
         setError(newErrors);
@@ -49,8 +45,6 @@ const CreateCharacterModal = ({showModal, setGameState, startGame}: CreateCharac
             level,
             race,
             _class,
-            background,
-            alignment,
         });
     }
 
@@ -76,19 +70,6 @@ const CreateCharacterModal = ({showModal, setGameState, startGame}: CreateCharac
         if (event.target.value.length <= MAX_TITLE_LENGTH) {
             setClass(event.target.value);
             setError({...error, _class: false});
-        }
-    }
-
-    const handleBackgroundChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-        if (event.target.value.length <= MAX_DESCRIPTION_LENGTH) {
-            setBackground(event.target.value);
-        }
-    }
-
-    const handleAlignmentChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        if (event.target.value.length <= MAX_TITLE_LENGTH) {
-            setAlignment(event.target.value);
-            setError({...error, alignment: false});
         }
     }
 
@@ -119,18 +100,6 @@ const CreateCharacterModal = ({showModal, setGameState, startGame}: CreateCharac
                     <Typography>Class</Typography>
                     <Input error={error._class} value={_class} onChange={handleClassChange} />
                     <FormHelperText>{"("+_class.length+"/"+MAX_TITLE_LENGTH+")"}</FormHelperText>
-                </FormControl>
-
-                <FormControl>
-                    <Typography>Alignment</Typography>
-                    <Input error={error.alignment} value={alignment} onChange={handleAlignmentChange} />
-                    <FormHelperText>{"("+alignment.length+"/"+MAX_TITLE_LENGTH+")"}</FormHelperText>
-                </FormControl>
-
-                <FormControl>
-                    <Typography>Background</Typography>
-                    <Textarea value={background} onChange={handleBackgroundChange} />
-                    <FormHelperText>{"("+background.length+"/"+MAX_DESCRIPTION_LENGTH+")"}</FormHelperText>
                 </FormControl>
 
                 <Spacer size="8px" direction="vertical" />
