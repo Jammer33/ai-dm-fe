@@ -24,7 +24,16 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     setUser(undefined);
     setIsAuthenticated(false);
     // Clear cookie
-    Cookies.remove('token');
+    let domain;
+    if (process.env.NODE_ENV === 'production') {
+      domain = '.wizardgm.ai';
+    } else if (process.env.NODE_ENV === 'staging') {
+      domain = '.staging.wizardgm.ai';
+    } else {
+      domain = 'localhost';
+    }
+
+    Cookies.remove('token', { domain, path: '/' });
   };
 
   const checkUserToken = async () => {
