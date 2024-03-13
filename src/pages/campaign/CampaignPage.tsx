@@ -157,8 +157,9 @@ const CampaignPage: React.FC<Props> = (props) => {
             }
         }
 
-        function onNewGame(sessionToken: string) { 
+        function onNewGame(sessionToken: string, userTokenToCharacterName: Object) { 
             setSessionToken(sessionToken);
+            setUserTokenToCharacterName(new Map(Object.entries(userTokenToCharacterName)));
             session_token = sessionToken;
 
             // update the URL

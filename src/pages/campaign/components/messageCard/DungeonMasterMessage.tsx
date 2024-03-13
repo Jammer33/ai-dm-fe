@@ -18,6 +18,7 @@ const DungeonMasterMessage: React.FC<DungeonMasterMessageProps> = ({
   handleTTSStop,
   isAudioPlaying,
 }) => {
+  console.log(message.content);
   return (
 
     <Stack alignSelf="center" direction="column" alignItems="center">
@@ -31,7 +32,7 @@ const DungeonMasterMessage: React.FC<DungeonMasterMessageProps> = ({
                 <Spacer direction="horizontal" size="10px" />
                 <Stack>
                 <Spacer direction="vertical" size="5px" />
-                <Typography textAlign="center" level="body-sm">{message.content}</Typography>
+                <Typography whiteSpace="pre-line" textAlign="center" level="body-sm">{message.content}</Typography>
                 </Stack>
                 {message.textToSpeechState === TextToSpeechState.DORMANT && <IconButton disabled={isAudioPlaying} aria-label={"Speak message"} onClick={() => handleTTSRequest(message.content)}>
                 <VolumeUpIcon />
